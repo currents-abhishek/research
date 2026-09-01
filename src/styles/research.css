@@ -77,10 +77,10 @@ a:hover { text-decoration: underline; }
 
 /* ── Column ───────────────────────────────────────────────── */
 /* One knob per measure. JetBrains Mono's advance is 0.6em, so at the 16px
-   body size 76ch ≈ 730px and 88ch ≈ 845px. */
+   body size 82ch ≈ 790px and 94ch ≈ 900px. */
 :root {
-  --measure: 76ch;
-  --measure-wide: 88ch;
+  --measure: 82ch;
+  --measure-wide: 94ch;
 }
 .column {
   width: min(100% - 2.5rem, var(--measure));

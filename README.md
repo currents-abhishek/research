@@ -22,7 +22,7 @@ runtime and of the acme.bot product. Spec: `PHASE-1-ASTRO-SITE.md` in acme-growt
 - Articles: `src/content/research/*.mdx`. Schema: `src/content.config.ts`.
 - **Filename = URL.** `foo.mdx` → `/research/foo/`. Renaming a published file is a redirect, not a rename.
 - `topics` are WordPress category slugs; the build fails on unknown ones. Names + links come from the synced footer (`src/lib/topics.ts`) — WP decides whether a category links to `/blog/category/{slug}/` or a root pillar page.
-- Tables with 5+ columns get `table-wrap--bleed` (`scripts/rehype-table-wrap.mjs`) and run end-to-end, breaking out of the `--measure` column (76ch; `--measure-wide` 88ch for the listing); `.bleed` is the same utility for components.
+- Tables with 5+ columns get `table-wrap--bleed` (`scripts/rehype-table-wrap.mjs`) and run end-to-end, breaking out of the `--measure` column (82ch; `--measure-wide` 94ch for the listing); `.bleed` is the same utility for components.
 - `draft: true` excludes from build, listing, sitemap, RSS.
 - `readingTime` computed at 250 wpm (blog parity) unless set.
 - In MDX: `<Figure>`, `<Callout>`, `<Cite id="…" />`, `<EvalTable />` are available without import (registered in `src/pages/[slug].astro`). `<EvalTable />` is article-specific: it renders `src/data/answer-quality-eval.json` as the expandable per-query table (port of `aeo_tracker/reports/answer-quality-eval.html`). Tables/footnotes are plain GFM. `<mark>` = keyword highlight.
