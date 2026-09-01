@@ -1,0 +1,6 @@
+---
+// Inline pointer to a frontmatter citation: <Cite id="gsc" /> → [gsc]
+interface Props { id: string; label?: string }
+const { id, label } = Astro.props
+---
+<sup><a href={`#cite-${id}`} aria-label={`Source: ${label ?? id}`}>[{label ?? id}]</a></sup>

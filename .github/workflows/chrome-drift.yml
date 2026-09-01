@@ -1,0 +1,20 @@
+name: chrome drift
+on:
+  pull_request:
+  schedule:
+    - cron: "0 7 * * 1"
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node scripts/sync-chrome.mjs
+      - name: Fail if chrome drifted
+        run: |
+          if ! git diff --quiet -- src/generated; then
+            echo "Site chrome changed on /blog. Review and commit the update:"
+            git --no-pager diff -- src/generated
+            exit 1
+          fi

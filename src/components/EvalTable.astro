@@ -1,0 +1,224 @@
+---
+// Interactive per-query table for the answer-engine quality eval. Structure,
+// pills, caret, row-expand and the raw-output toggle are a port of the
+// standalone report (aeo_tracker/reports/answer-quality-eval.html); the
+// palette is the research one, and rows are server-rendered rather than built
+// from a JSON blob at runtime.
+import data from "../data/answer-quality-eval.json"
+
+const ENGINES = ["chatgpt", "ai_overview", "ai_mode"] as const
+const LABEL: Record<string, string> = {
+  chatgpt: "ChatGPT",
+  ai_mode: "AI Mode",
+  ai_overview: "AI Overview",
+}
+const { queries, means, firsts } = data as {
+  queries: {
+    id: string; query: string; vertical: string; order: string[]
+    why: string; note: string | null
+    answers: { engine: string; label: string; rank: number; n_citations: number; publishers: string[]; text: string; reason?: string | null }[]
+  }[]
+  means: Record<string, number>
+  firsts: Record<string, number>
+}
+const short = (s: string) => (s.length > 110 ? s.slice(0, 110) + "…" : s)
+---
+
+<div class="eval bleed">
+  <div class="cards">
+    {ENGINES.map((e) => (
+      <div class="card">
+        <div class={`eng ${e}`}>{LABEL[e]}</div>
+        <div class="num">{means[e].toFixed(2)}</div>
+        <div class="cap">mean rank · {firsts[e]} first place{firsts[e] === 1 ? "" : "s"}</div>
+      </div>
+    ))}
+  </div>
+
+  <p class="hint">
+    Click a row for why the winner won, then <b>Show raw model output</b>, then any
+    engine to read its answer exactly as captured.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:22px"></th>
+        <th>Query</th>
+        <th class="hidesm" style="width:120px">Winner</th>
+        <th style="width:290px">Why it won</th>
+      </tr>
+    </thead>
+    <tbody>
+      {queries.map((q) => (
+        <>
+          <tr class="row" tabindex="0" role="button" aria-expanded="false">
+            <td><span class="caret">▸</span></td>
+            <td class="q">{short(q.query)}<span class="vert">{q.id} · {q.vertical}</span></td>
+            <td class={`hidesm win ${q.order[0]}`}>{LABEL[q.order[0]]}</td>
+            <td class="why">{q.why}</td>
+          </tr>
+          <tr class="detail" hidden>
+            <td colspan="4">
+              <div class="dwrap">
+                {q.note && <div class="warn">{q.note}</div>}
+                {q.answers.some((a) => a.reason) ? (
+                  /* One line per rank on why the judge placed it there. Only
+                     rendered for queries whose full judgment was saved. */
+                  <ol class="reasons">
+                    {q.answers.slice().sort((a, b) => a.rank - b.rank).map((a) => (
+                      <li>
+                        <b class={a.engine}>{a.rank}. {a.label}</b>
+                        <span class="rtext">{a.reason}</span>
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <div class="podium">
+                    {q.order.map((e, i) => (
+                      <span class="pill"><b class={e}>{i + 1}. {LABEL[e]}</b></span>
+                    ))}
+                  </div>
+                )}
+                <div class="fullq"><b>Full query:</b> {q.query}</div>
+                <button class="rawbtn" type="button" aria-expanded="false">Show raw model output</button>
+                <div class="raws" hidden>
+                  {q.answers.slice().sort((a, b) => a.rank - b.rank).map((a) => (
+                    <div class="ans">
+                      <button class="ansbtn" type="button" aria-expanded="false">
+                        <span class="acaret">▸</span>
+                        <span class={`aname ${a.engine}`}>{a.rank}. {a.label}</span>
+                        <span class="asum">
+                          {a.text.length.toLocaleString()} chars ·{" "}
+                          {a.n_citations} citation{a.n_citations === 1 ? "" : "s"}
+                        </span>
+                      </button>
+                      <div class="abody" hidden>
+                        <div class="meta">
+                          Cited: {a.publishers.length ? a.publishers.join(", ") : "none"}
+                        </div>
+                        <pre>{a.text}</pre>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </td>
+          </tr>
+        </>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // Row click toggles its detail row; the raw-output button toggles inside it
+  // without collapsing the row.
+  for (const table of document.querySelectorAll<HTMLElement>(".eval table")) {
+    table.addEventListener("click", (ev) => {
+      const target = ev.target as HTMLElement
+      const abtn = target.closest<HTMLButtonElement>(".ansbtn")
+      if (abtn) {
+        const body = abtn.nextElementSibling as HTMLElement
+        const open = body.hidden
+        body.hidden = !open
+        abtn.setAttribute("aria-expanded", String(open))
+        abtn.classList.toggle("open", open)
+        return
+      }
+      const btn = target.closest<HTMLButtonElement>(".rawbtn")
+      if (btn) {
+        const raws = btn.parentElement!.querySelector<HTMLElement>(".raws")!
+        const on = raws.hidden
+        raws.hidden = !on
+        btn.setAttribute("aria-expanded", String(on))
+        btn.textContent = on ? "Hide raw model output" : "Show raw model output"
+        return
+      }
+      const row = target.closest<HTMLElement>("tr.row")
+      if (!row) return
+      const detail = row.nextElementSibling as HTMLElement
+      const on = detail.hidden
+      detail.hidden = !on
+      row.classList.toggle("open", on)
+      row.setAttribute("aria-expanded", String(on))
+    })
+    table.addEventListener("keydown", (ev) => {
+      const row = (ev.target as HTMLElement).closest<HTMLElement>("tr.row")
+      if (!row || (ev.key !== "Enter" && ev.key !== " ")) return
+      ev.preventDefault()
+      row.click()
+    })
+  }
+</script>
+
+<style>
+  /* Engine identity colours. Data encoding, not the brand accent — --highlight
+     stays reserved for links and nav. */
+  .eval {
+    --cg: #5ec9a0;
+    --am: #e0a95e;
+    --ao: #85aeea;
+    /* margin-block only — margin-inline belongs to .bleed, which recentres the
+       component outside the 68ch measure. */
+    margin-block: 0 1.5em;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--research-prose);
+  }
+  .chatgpt { color: var(--cg); }
+  .ai_mode { color: var(--am); }
+  .ai_overview { color: var(--ao); }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 0 0 12px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+  .card .eng { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.02em; }
+  .card .num { font-size: 1.9rem; font-weight: 600; letter-spacing: -0.03em; margin: 4px 0 0; color: var(--foreground); font-variant-numeric: tabular-nums; }
+  .card .cap { color: var(--muted-foreground); font-size: 0.75rem; }
+  .hint { color: var(--muted-foreground); font-size: 0.8rem; margin: 0 0 12px; }
+
+  table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  thead th { text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted-foreground); font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  tbody tr.row { border-top: 1px solid var(--border); cursor: pointer; }
+  tbody tr.row:hover, tbody tr.row:focus-visible { background: rgba(255, 255, 255, 0.03); outline: none; }
+  tbody tr.row:first-child { border-top: none; }
+  td { padding: 11px 12px; vertical-align: top; }
+  .q { color: var(--foreground); }
+  .q .vert { color: var(--muted-foreground); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-top: 3px; }
+  .win { white-space: nowrap; font-weight: 600; font-size: 0.82rem; }
+  .caret { color: var(--muted-foreground); width: 16px; display: inline-block; transition: transform 0.12s; }
+  tr.open .caret { transform: rotate(90deg); }
+  tr.detail > td { padding: 0; background: rgba(0, 0, 0, 0.15); border-top: 1px solid var(--border); }
+  .dwrap { padding: 14px 16px 18px; }
+  .podium { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 12px; }
+  .reasons { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 7px; }
+  .reasons li { display: grid; grid-template-columns: 122px 1fr; gap: 10px; align-items: baseline; font-size: 0.8rem; }
+  .reasons b { font-weight: 600; white-space: nowrap; }
+  .rtext { color: var(--research-prose); }
+  @media (max-width: 560px) { .reasons li { grid-template-columns: 1fr; gap: 2px; } }
+  .pill { font-size: 0.75rem; border: 1px solid var(--border); background: var(--card); border-radius: 999px; padding: 4px 11px; font-weight: 600; }
+  .warn { background: rgba(224, 169, 94, 0.1); border: 1px solid rgba(224, 169, 94, 0.35); color: var(--am); border-radius: var(--radius); padding: 9px 12px; font-size: 0.8rem; margin: 0 0 12px; }
+  .fullq { font-size: 0.82rem; margin: 0 0 10px; }
+  .rawbtn { font: inherit; font-size: 0.78rem; font-weight: 600; color: var(--foreground); background: var(--card); border: 1px solid var(--border); border-radius: 7px; padding: 6px 12px; cursor: pointer; }
+  .rawbtn:hover { border-color: var(--ring); }
+  .raws { margin: 14px 0 0; }
+  .ans { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin: 0 0 10px; overflow: hidden; }
+  /* Second disclosure level: each engine's raw answer opens on its own. */
+  .ansbtn { display: flex; align-items: baseline; gap: 8px; width: 100%; font: inherit; font-size: 0.8rem; text-align: left; color: var(--foreground); background: none; border: none; padding: 10px 14px; cursor: pointer; }
+  .ansbtn:hover { background: rgba(255, 255, 255, 0.03); }
+  .ansbtn:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
+  .acaret { color: var(--muted-foreground); flex: none; transition: transform 0.12s; }
+  .ansbtn.open .acaret { transform: rotate(90deg); }
+  .aname { font-weight: 600; }
+  .asum { color: var(--muted-foreground); font-size: 0.72rem; margin-left: auto; flex: none; font-variant-numeric: tabular-nums; }
+  .abody { padding: 0 14px 12px; }
+  .ans .meta { color: var(--muted-foreground); font-size: 0.72rem; margin: 0 0 8px; word-break: break-word; }
+  /* Full width of the bled-out card, wrapped — no inner scrollbox, and long
+     capture URLs break rather than forcing a horizontal scrollbar. */
+  .ans pre { margin: 0; width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.75rem; line-height: 1.5; color: var(--research-prose); }
+
+  @media (max-width: 640px) {
+    .cards { grid-template-columns: 1fr; }
+    .hidesm { display: none; }
+  }
+</style>

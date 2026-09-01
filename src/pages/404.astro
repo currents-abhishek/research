@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import { absolute, path } from "../lib/site"
+---
+<BaseLayout title="Not found — ACME.BOT Research" description="This research page does not exist." canonical={absolute("404")} noindex>
+  <section class="column notfound">
+    <p class="eyebrow">404</p>
+    <h1>Not found</h1>
+    <p>No research lives at this address. It may have moved, or the link may be wrong.</p>
+    <p class="meta"><a href={path()}>← All research</a><a href="/blog/">The AI SEO Blog</a><a href="https://acme.bot/">acme.bot</a></p>
+  </section>
+</BaseLayout>

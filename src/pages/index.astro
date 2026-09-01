@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import ArticleMeta from "../components/ArticleMeta.astro"
+import { absolute, path, publishedResearch, readingTime } from "../lib/site"
+
+const posts = await publishedResearch()
+const title = "Research — ACME.BOT"
+const description =
+  "Original data studies from ACME.BOT on how answer engines and search actually rank, cite, and surface content."
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "ACME.BOT Research",
+    description,
+    url: absolute(),
+    isPartOf: { "@type": "WebSite", name: "ACME.BOT", url: "https://acme.bot" },
+  },
+]
+// Pagination deliberately absent: revisit past ~30 articles (§7).
+---
+<BaseLayout {title} {description} canonical={absolute()} {jsonLd}>
+  <section class="column column--wide">
+    <header class="listing-head">
+      <p class="eyebrow">ACME.BOT / research</p>
+      <h1>Research</h1>
+      <p>Measured, not asserted. Studies on answer-engine citation, organic visibility, and what actually moves them.</p>
+      <div class="accent-rule" aria-hidden="true"></div>
+    </header>
+    {posts.length === 0 ? (
+      <p class="listing-empty">Nothing published yet.</p>
+    ) : (
+      <ol class="listing" reversed>
+        {posts.map((p) => (
+          <li>
+            <h2><a href={path(p.id)}>{p.data.title}</a></h2>
+            <p class="deck">{p.data.description}</p>
+            <ArticleMeta publishDate={p.data.publishDate} updatedDate={p.data.updatedDate} readingTime={readingTime(p)} topics={p.data.topics} />
+          </li>
+        ))}
+      </ol>
+    )}
+    <p class="listing-foot meta"><a href={path("rss.xml")}>RSS</a><a href="/blog/">The AI SEO Blog</a></p>
+  </section>
+</BaseLayout>

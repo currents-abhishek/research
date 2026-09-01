@@ -1,0 +1,167 @@
+---
+title: "ChatGPT beats both Google AI Mode and AI Overviews in quality 84% of the time"
+description: "A pilot study: blind, ranked comparison of ChatGPT, Google AI Mode and AI Overview on 25 real prompts. ChatGPT won 21 of 25. Full per-query data below."
+publishDate: 2026-08-31
+topics: [answer-engine-optimization]
+---
+
+A pilot study. <mark>25 prompts</mark> across different verticals, three
+engines, blinded and ranked by an independent judge (Opus 5).
+
+## Summary
+
+| Engine | Mean overall rank | Firsts |
+|:--|--:|--:|
+| ChatGPT | <mark>1.20</mark> | 21 |
+| AI Overview | 2.28 | 1 |
+| AI Mode | 2.52 | 3 |
+
+- ChatGPT first on <mark>21 of 25</mark>. The two Google surfaces trade second and third
+  round to round — the gap between *them* is not stable.
+
+## Method
+
+<Callout>
+  <p>This is a pilot study, sized to see whether the effect is worth measuring
+  properly. 25 prompts were sampled at random from a single crawl on 2026-08-27,
+  keeping only those where all three engines answered without error. For each
+  prompt the three answers were relabelled <code>SOURCE-A</code>,
+  <code>SOURCE-B</code> and <code>SOURCE-C</code> under a fresh shuffle, so the
+  same letter is a different engine every time. A judge who never saw the key
+  ranked them first, second and third, checking factual claims against live web
+  search.</p>
+  <p>Every answer was captured signed out, on each engine's free public surface —
+  no accounts, no subscriptions, no personalisation or chat history.</p>
+</Callout>
+
+## Takeaways
+
+### ChatGPT wins by committing
+
+It is the engine that picks a brand, quotes a number, gives a handle that
+resolves, and names the constraint that actually decides the question — then
+stops. The Google surfaces more often assemble competent analysis and decline to
+land it: they lost q16, q19, q2, q7 and q10 by offering to continue instead of
+answering. Being <mark>specific</mark> and sometimes wrong beat being thorough
+and non-committal.
+
+### Citation count runs inverse to answer quality
+
+Winning answers carried a mean of <mark>5.0 citations</mark>; second place 8.2
+and third 8.5. The winner had the fewest citations of the three on 10 of 25
+prompts, and the most on just 3. AI Mode cited 23 publishers on q13 — including
+a library-discovery platform and a job board — and finished last. Volume is not
+the signal.
+
+### The best answers are often not the longest
+
+If anything the data leans the other way. Winning answers averaged <mark>4,259
+characters</mark> against 4,914 for second and 5,121 for third, and the winner
+was the shortest of the three on 13 of 25 prompts — q6 won on 2,317 characters
+against 5,982. The correlation between length and rank is weak (Spearman +0.10),
+so read this as *length does not buy quality* rather than as brevity winning on
+its own. Longer reads as more thorough and scores as more padded.
+
+### Where the answer *is* the identifier, omitting it is fatal
+
+Asked for Telegram channels, only ChatGPT gave <mark>handles that resolve</mark>;
+the Google arms named channels the user cannot find. Same shape as the withheld
+affiliate commission rates. The useful unit is a resolvable name, not a
+description.
+
+### Firing on a prompt you should decline is worse than declining
+
+q12 had no antecedent; AI Overview invented a scenario and shipped it with
+<mark>7 citations</mark> while both others asked for context. Citations on a
+hallucinated premise make the error harder to catch, not easier.
+
+### Most failure modes are not hallucinations or fabrications
+
+Across 25 queries the errors were overwhelmingly <mark>stale or
+mischaracterised</mark> — a real company described wrongly, a real product with
+last year's terms, a rebrand not yet absorbed — rather than invented. That
+matters for how you correct them: the fix is fresher public information, not
+catching a model making things up. The exception: q7 produced four
+unreproducible fund return figures (26.46% claimed against 23.79% published), in
+the one vertical where a wrong number costs money directly.
+
+### Rebrands lag on the Google surfaces
+
+Only ChatGPT knew Velocity Global → Pebl (q5). All three still said "LambdaTest"
+<mark>8 months</mark> after the TestMu AI rebrand (q13). Budget many months for a
+rename to reach these surfaces.
+
+### What all three miss
+
+For every prompt the judge also recorded what none of the engines said. Those
+gaps are the opening: if no answer engine surfaces a fact, no competitor is being
+cited for it either. Three examples from this set:
+
+- Over a 7-year hold, Indian capital-gains tax and the ~1 percentage point a year
+  cost of a regular rather than direct plan matter more than the gap between the
+  funds being compared. None of the three raised either (q7).
+- Suno's free tier stops allowing downloads on 3 September 2026, a week after we
+  captured. All three recommended it; <mark>none mentioned</mark> the cap (q9).
+- Amazon runs its own vetted Service Provider Network directory, the obvious
+  place to check an agency before hiring one. No engine pointed to it (q6).
+
+## Study conditions and limitations
+
+- A pilot study, not a benchmark: n=25 prompts, all captured from one geography
+  — a US locale, with the Google arms pinned to New York. Treat the direction as
+  the finding and the exact percentages as provisional.
+- Signed-out and free tiers only. Every capture was anonymous, so none of this
+  speaks to what a paid or logged-in user sees — ChatGPT Plus, Google AI Pro, or
+  any surface with personalisation and chat history could rank differently.
+- Judged by Claude Opus 5. Cross-checked on a sample with a second judge
+  (`gemini-3.7-flash`, temp 0, n=8) against the same blinded files and the same
+  per-query rubric — <mark>seven of eight</mark> exact agreement, the lone disagreement being
+  a query two judges already contest. The second judge is one of Google's own
+  models, and it ranked Google's own surfaces second and third on every query it
+  saw, so the result is not an artifact of same-family preference in the judge.
+  Five of the eight ran with live web search, and reproduced the first judge's
+  order on all five including a second/third swap.
+- Declining to answer counts against a source. AI Mode and AI Overview lost q16,
+  q19 and q2 by refusing to conclude after competent analysis. A reader who
+  thinks a search surface *should* stay neutral would rank those differently.
+- Judges disagree on facts, not just taste — two judges searched live on q20 and
+  reached opposite ground truth. Truthfulness ranks are softer than they look.
+- The other 17 scored queries are single-judge.
+
+## Appendix: raw data
+
+Every query, its full 1-2-3 order, and the three answers exactly as captured —
+citation counts and cited publishers included. Click a row.
+
+<EvalTable />
+
+### Answer length and citations
+
+| # | ChatGPT chars | cites | AI Mode chars | cites | AI Overview chars | cites |
+|:--|--:|--:|--:|--:|--:|--:|
+| q1 | 5,974 | 15 | 4,984 | 3 | 5,881 | 11 |
+| q2 | 7,919 | 10 | 11,958 | 16 | 10,904 | 13 |
+| q3 | 3,381 | 5 | 5,646 | 11 | 6,714 | 17 |
+| q4 | 4,263 | 7 | 4,943 | 4 | 3,752 | 8 |
+| q5 | 2,850 | 6 | 7,620 | 25 | 4,530 | 6 |
+| q6 | 2,317 | 5 | 5,261 | 8 | 5,982 | 12 |
+| q7 | 3,925 | 4 | 4,306 | 3 | 5,676 | 10 |
+| q8 | 3,194 | 5 | 3,161 | 2 | 3,480 | 8 |
+| q9 | 2,716 | 9 | 7,789 | 17 | 5,171 | 11 |
+| q10 | 4,183 | 2 | 1,795 | 1 | 3,899 | 21 |
+| q11 | 3,032 | 4 | 5,013 | 3 | 7,263 | 12 |
+| q12 | 142 | 0 | 228 | 0 | 3,433 | 7 |
+| q13 | 4,241 | 4 | 7,865 | 23 | 4,117 | 9 |
+| q14 | 10,907 | 1 | 2,793 | 0 | 2,053 | 0 |
+| q15 | 3,110 | 5 | 9,378 | 9 | 5,955 | 12 |
+| q16 | 4,235 | 4 | 7,109 | 5 | 4,883 | 19 |
+| q17 | 1,984 | 5 | 4,995 | 14 | 3,452 | 6 |
+| q18 | 2,562 | 0 | 3,871 | 0 | 1,689 | 0 |
+| q19 | 6,169 | 7 | 7,070 | 2 | 2,956 | 7 |
+| q20 | 3,223 | 5 | 4,377 | 4 | 4,892 | 10 |
+| q21 | 6,128 | 6 | 7,257 | 6 | 7,474 | 17 |
+| q22 | 2,256 | 5 | 4,390 | 1 | 2,303 | 3 |
+| q23 | 4,766 | 7 | 6,174 | 5 | 5,348 | 14 |
+| q24 | 3,048 | 0 | 1,995 | 0 | 4,561 | 6 |
+| q25 | 4,878 | 2 | 5,949 | 14 | 3,680 | 6 |
+| **mean** | **4,056** | **4.9** | **5,437** | **7.0** | **4,802** | **9.8** |

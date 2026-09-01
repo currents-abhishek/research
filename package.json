@@ -1,0 +1,29 @@
+{
+  "name": "acme-research",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "acme.bot /research — static Astro site",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "prebuild": "node scripts/sync-chrome.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "sync-chrome": "node scripts/sync-chrome.mjs"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.2.4",
+    "@astrojs/mdx": "^7.0.8",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.2.9"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,19 @@
+---
+import { fmtDate, isoDate } from "../lib/site"
+import { topic } from "../lib/topics"
+interface Props {
+  publishDate: Date
+  updatedDate?: Date
+  readingTime: number
+  topics?: string[]
+}
+const { publishDate, updatedDate, readingTime, topics = [] } = Astro.props
+---
+<p class="meta">
+  <time datetime={isoDate(publishDate)}>{fmtDate(publishDate)}</time>
+  {updatedDate && <span>Updated <time datetime={isoDate(updatedDate)}>{fmtDate(updatedDate)}</time></span>}
+  <span>{readingTime} min read</span>
+  {topics.length > 0 && (
+    <span class="topics">{topics.map((t) => { const c = topic(t); return <a class="topic" href={c.href}>{c.name}</a> })}</span>
+  )}
+</p>

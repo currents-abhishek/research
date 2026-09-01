@@ -1,0 +1,19 @@
+---
+import { render } from "astro:content"
+import ArticleLayout from "../layouts/ArticleLayout.astro"
+import { publishedResearch } from "../lib/site"
+import Figure from "../components/Figure.astro"
+import Callout from "../components/Callout.astro"
+import Cite from "../components/Cite.astro"
+import EvalTable from "../components/EvalTable.astro"
+
+export async function getStaticPaths() {
+  const posts = await publishedResearch()
+  return posts.map((entry) => ({ params: { slug: entry.id }, props: { entry } }))
+}
+const { entry } = Astro.props
+const { Content } = await render(entry)
+---
+<ArticleLayout {entry}>
+  <Content components={{ Figure, Callout, Cite, EvalTable }} />
+</ArticleLayout>

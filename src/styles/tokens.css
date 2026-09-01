@@ -1,0 +1,52 @@
+/* Research palette — transcribed from frontend-agents/common/src/styles/themes/zinc.css (.dark).
+   Dark only: no light variant, no toggle (§4). */
+:root {
+  /* Surfaces moved off the spec's zinc-900/950/800 to a "space grey" ramp at
+     the requester's ask (2026-08-31): lighter, slightly cool. This is the one
+     deliberate divergence from themes/zinc.css; text tokens are unchanged. */
+  --background: #2f3237;        /* space grey */
+  --card: #212428;              /* raised surfaces: one step darker */
+  --foreground: #fafafa;        /* zinc-50 */
+  --muted-foreground: #a1a1aa;  /* zinc-400 */
+  --border: #43474d;
+  --input: #43474d;
+  --ring: #d4d4d8;              /* zinc-300 */
+  --highlight: #249fbd;         /* brand cyan — links, one accent rule, active nav. Nothing else. */
+  --radius: 0.5rem;
+  --grid-line: rgba(255, 255, 255, 0.05);
+
+  /* Research-only: long-form body copy. zinc-300, softer than --foreground
+     across a 3,000-word article. Headings stay --foreground. */
+  --research-prose: #d4d4d8;
+
+  /* Type — the whole of acme.bot is JetBrains Mono (common/src/styles/tokens.css). */
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Document scale, size only (common/src/styles/typography.css doc-*; 375px → 1440px). */
+  --doc-h1: clamp(1.5rem, 1.236rem + 1.127vw, 2.25rem);      /* 24 → 36px */
+  --doc-h2: clamp(1.25rem, 1.03rem + 0.939vw, 1.875rem);     /* 20 → 30px */
+  --doc-h3: clamp(1.125rem, 0.993rem + 0.563vw, 1.5rem);     /* 18 → 24px */
+  --doc-h4: clamp(1rem, 0.912rem + 0.376vw, 1.25rem);        /* 16 → 20px */
+  --doc-body: clamp(0.9375rem, 0.916rem + 0.094vw, 1rem);    /* 15 → 16px */
+
+  /* Display scale — listing-page header only, never article bodies (§4.3). */
+  --display-h1: clamp(2.25rem, 1.5rem + 2vw, 3rem);
+}
+
+/* Reconcile the WordPress chrome's tokens with the research palette so the
+   synced header and footer sit on the same surface as the page. The plugin
+   defines these under [data-theme="dark"], so match that specificity. */
+:root,
+[data-theme="dark"] {
+  --acme-bg: var(--background);
+  --acme-fg: var(--foreground);
+  --acme-muted-fg: var(--muted-foreground);
+  --acme-border: var(--border);
+  --acme-highlight: var(--highlight);
+  --acme-primary: var(--foreground);
+  --acme-primary-fg: var(--background);
+  --acme-secondary: var(--card);
+  --acme-secondary-fg: var(--foreground);
+  --acme-font-mono: var(--font-mono);
+}

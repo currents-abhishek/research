@@ -1,0 +1,361 @@
+/* Self-hosted variable JetBrains Mono — single woff2, wght 100–800, latin. */
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("/research/fonts/JetBrainsMono-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: var(--doc-body);
+  line-height: 1.7;
+}
+main { flex: 1; container-type: inline-size; }
+
+/* Section nav injected into the synced header by SiteHeader.astro — the
+   WordPress chrome ships brand + CTA only. Cyan marks the active section,
+   which is one of the token's three sanctioned uses.
+   Absolutely centred on the header rather than flexed, so it sits on the
+   page's centre line instead of the midpoint between brand and CTA. */
+.acmebot-site-header__inner { position: relative; }
+.acmebot-header-nav {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 28px;
+  font-family: var(--font-mono); font-size: 15px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.acmebot-header-nav a { color: var(--muted-foreground); text-decoration: none; }
+.acmebot-header-nav a:hover { color: var(--foreground); }
+.acmebot-header-nav a[aria-current="page"] { color: var(--highlight); }
+/* Brand + nav + CTA do not fit on one narrow row, so the nav wraps to its own
+   centred line underneath rather than pushing the CTA off-screen. */
+@media (max-width: 700px) {
+  .acmebot-site-header__inner { flex-wrap: wrap; row-gap: 2px; }
+  .acmebot-header-nav {
+    position: static; transform: none;
+    order: 3; flex: 0 0 100%; justify-content: center;
+    gap: 20px; font-size: 13px; letter-spacing: 0.06em; padding-bottom: 4px;
+  }
+}
+
+/* The synced header/footer use 100vw + negative margins to break out of
+   WordPress's constrained layout. There is nothing to break out of here. */
+.acmebot-site-header,
+.acmebot-site-footer {
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.acmebot-site-footer { margin-top: 96px; }
+
+a { color: var(--highlight); text-decoration: none; text-underline-offset: 0.2em; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 2px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* ── Column ───────────────────────────────────────────────── */
+.column {
+  width: min(100% - 2.5rem, 68ch);
+  margin-inline: auto;
+}
+.column--wide { width: min(100% - 2.5rem, 80ch); }
+
+/* ── Shared type roles ────────────────────────────────────── */
+.eyebrow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+  margin: 0 0 0.75rem;
+}
+.eyebrow a { color: inherit; }
+.eyebrow a:hover { color: var(--foreground); text-decoration: none; }
+.caption {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+.meta {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 0.75rem; align-items: baseline;
+  font-size: 0.75rem; color: var(--muted-foreground);
+  margin: 0;
+}
+.meta > * + *::before { content: "·"; margin-right: 0.75rem; opacity: 0.6; }
+.topics { display: inline-flex; flex-wrap: wrap; gap: 0.25rem 0.9rem; }
+.topic { color: var(--muted-foreground); text-decoration: underline; text-decoration-color: var(--border); text-underline-offset: 0.2em; }
+.topic:hover { color: var(--highlight); text-decoration-color: currentColor; }
+
+/* ── Listing (/research) ──────────────────────────────────── */
+.listing-head { padding: 4.5rem 0 3rem; border-bottom: 1px solid var(--border); }
+.listing-head h1 {
+  font-size: var(--display-h1);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin: 0 0 1rem;
+}
+.listing-head p { margin: 0; color: var(--research-prose); max-width: 56ch; }
+.listing-head .accent-rule { width: 2.5rem; height: 2px; background: var(--highlight); margin: 1.5rem 0 0; }
+.listing { list-style: none; margin: 0; padding: 0; }
+.listing li { padding: 2rem 0; border-bottom: 1px solid var(--border); }
+.listing h2 { font-size: var(--doc-h3); font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; margin: 0 0 0.5rem; }
+.listing h2 a { color: var(--foreground); }
+.listing h2 a:hover { color: var(--highlight); text-decoration: none; }
+.listing .deck { margin: 0 0 0.75rem; color: var(--research-prose); }
+.listing-empty { padding: 3rem 0; color: var(--muted-foreground); }
+.listing-foot { padding: 2rem 0 0; }
+
+/* ── Article ──────────────────────────────────────────────── */
+.article-head { padding: 4rem 0 2.5rem; }
+.article-head h1 {
+  font-size: var(--doc-h1);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  margin: 0 0 1rem;
+  color: var(--foreground);
+}
+.article-head .deck {
+  font-size: var(--doc-h4);
+  line-height: 1.5;
+  color: var(--research-prose);
+  margin: 0 0 1.25rem;
+}
+.article-hero { margin: 0 0 2.5rem; }
+.article-hero img { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+.article-foot { margin-top: 3.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+
+
+/* ── Prose (document scale, §4.3) ─────────────────────────── */
+.prose { color: var(--research-prose); font-size: var(--doc-body); line-height: 1.7; }
+.prose > * { margin-top: 0; margin-bottom: 1.35em; }
+.prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  color: var(--foreground);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin-top: 2.4em;
+  margin-bottom: 0.7em;
+  scroll-margin-top: 5rem;
+}
+.prose h2 { font-size: var(--doc-h2); padding-top: 1.2em; border-top: 1px solid var(--border); }
+.prose h3 { font-size: var(--doc-h3); }
+/* Markdown-style depth marker, emitted as a real <a> by rehype-heading-anchor.
+   Click copies the section link; without JS it still navigates to the anchor. */
+.prose .hanchor {
+  color: var(--muted-foreground);
+  font-weight: 400;
+  margin-right: 0.4ch;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  border: 0;
+  background: none;
+  transition: color 0.12s;
+}
+.prose .hanchor:hover { color: var(--highlight); }
+.prose .hanchor:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 3px; }
+/* Transient "Copied" flag, toggled by the class the click handler adds. */
+.prose .hanchor.copied::after {
+  content: "Copied";
+  position: absolute;
+  left: 0;
+  top: -1.6em;
+  font-size: 0.62em;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--highlight);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) { .prose .hanchor { transition: none; } }
+.prose h4 { font-size: var(--doc-h4); }
+.prose h5, .prose h6 { font-size: var(--doc-body); }
+.prose h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.prose strong { color: var(--foreground); font-weight: 600; }
+.prose ul, .prose ol { padding-left: 1.5rem; }
+.prose li { margin: 0.35em 0; }
+.prose li::marker { color: var(--muted-foreground); }
+.prose hr { border: 0; border-top: 1px solid var(--border); margin: 3em 0; }
+.prose img { max-width: 100%; height: auto; }
+
+/* Inline code + code blocks */
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.05em 0.35em;
+}
+.prose pre {
+  background: var(--card) !important;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.85em;
+  line-height: 1.6;
+}
+.prose pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+
+/* Inline keyword highlight (typography.css `kw`) — sparingly. */
+.prose mark, .kw {
+  background: color-mix(in srgb, var(--highlight) 18%, transparent);
+  color: var(--foreground);
+  font-weight: 600;
+  border-radius: 3px;
+  padding: 1px 0.25rem;
+}
+
+/* Data tables — --card surface, --border rules, right-aligned numerics,
+   sticky header, horizontal scroll on narrow viewports. */
+.table-wrap {
+  margin: 0 0 1.5em;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  overscroll-behavior-x: contain;
+}
+/* Wide tables (5+ columns, tagged by scripts/rehype-table-wrap.mjs) break out of
+   the 68ch measure and run end-to-end. 100cqw is main's content box, so it
+   excludes the stable scrollbar gutter that 100vw would double-count.
+   margin-inline percentages resolve against the column, so 50% - width/2 recentres. */
+.table-wrap--bleed,
+.bleed {
+  --bleed: min(100cqw - 2.5rem, 1400px);
+  width: var(--bleed);
+  margin-inline: calc(50% - var(--bleed) / 2);
+}
+@supports not (width: 100cqw) {
+  .table-wrap--bleed, .bleed { --bleed: 100%; }
+}
+.prose table {
+  width: 100%;
+  min-width: 36rem;
+  border-collapse: collapse;
+  font-size: 0.85em;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+.prose thead th {
+  position: sticky; top: 0;
+  background: var(--card);
+  color: var(--foreground);
+  font-weight: 600;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+.prose th, .prose td { padding: 0.6rem 0.9rem; vertical-align: top; border-bottom: 1px solid var(--border); }
+.prose tbody tr:last-child td { border-bottom: 0; }
+.prose td[align="right"], .prose th[align="right"] { text-align: right; }
+.prose td[align="center"], .prose th[align="center"] { text-align: center; }
+.prose tbody tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+/* Blockquote — pull quote variant, one and restrained. */
+.prose blockquote {
+  margin: 2em 0;
+  padding: 0.25em 0 0.25em 1.25rem;
+  border-left: 2px solid var(--highlight);
+  color: var(--foreground);
+  font-size: var(--doc-h4);
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+.prose blockquote p { margin: 0; }
+/* Links inside running text carry an underline (a11y: not colour-only). */
+.prose p a, .prose li a, .citations a, .prose section[data-footnotes] a {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--highlight) 45%, transparent);
+  text-decoration-thickness: 1px;
+}
+.prose p a:hover, .prose li a:hover, .citations a:hover { text-decoration-color: var(--highlight); }
+.prose blockquote p + p { margin-top: 0.75em; }
+.prose blockquote cite { display: block; margin-top: 0.75em; font-style: normal; font-size: 0.75rem; color: var(--muted-foreground); }
+
+/* Methodology callout — one variant. */
+.callout {
+  margin: 2em 0;
+  padding: 1rem 1.25rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.9em;
+}
+.callout .eyebrow { margin-bottom: 0.5rem; }
+.callout > :last-child { margin-bottom: 0; }
+.callout p { margin: 0 0 0.75em; }
+
+/* Figures */
+.figure { margin: 2em 0; }
+.figure img, .figure svg {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--card);
+}
+.figure figcaption { margin-top: 0.6rem; }
+.figure figcaption .fig-label { color: var(--foreground); font-weight: 600; margin-right: 0.4rem; }
+
+/* Footnotes (remark-gfm) */
+.prose sup a[data-footnote-ref] { font-weight: 600; padding: 0 0.1em; }
+.prose sup a[data-footnote-ref]::before { content: "["; }
+.prose sup a[data-footnote-ref]::after { content: "]"; }
+.prose section[data-footnotes] {
+  margin-top: 3.5em; padding-top: 1.5em;
+  border-top: 1px solid var(--border);
+  font-size: 0.8em; color: var(--muted-foreground);
+}
+.prose section[data-footnotes] ol { padding-left: 1.25rem; }
+.prose section[data-footnotes] li { margin: 0.5em 0; }
+.prose section[data-footnotes] li:target { color: var(--foreground); }
+.prose a[data-footnote-backref] { text-decoration: none; margin-left: 0.25em; }
+
+/* Citations block */
+.citations { margin-top: 3.5em; padding-top: 1.5em; border-top: 1px solid var(--border); }
+.citations h2 { font-size: var(--doc-h4); margin: 0 0 1rem; color: var(--foreground); border: 0; padding: 0; }
+.citations ol { margin: 0; padding-left: 1.75rem; font-size: 0.8em; line-height: 1.6; color: var(--muted-foreground); }
+.citations li { margin: 0.5em 0; }
+.citations li:target { color: var(--foreground); }
+.citations .cite-title { color: var(--research-prose); }
+.citations .cite-pub::before, .citations .cite-acc::before { content: " — "; }
+
+/* 404 */
+.notfound { padding: 6rem 0 4rem; }
+.notfound h1 { font-size: var(--display-h1); font-weight: 600; letter-spacing: -0.025em; margin: 0 0 1rem; }
+.notfound p { color: var(--research-prose); }
+.notfound .eyebrow { color: var(--highlight); }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+@media print {
+  .acmebot-site-header, .acmebot-site-footer { display: none; }
+  body { background: #fff; color: #000; }
+}

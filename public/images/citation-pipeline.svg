@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" width="960" height="300" role="img" aria-labelledby="t d">
+  <title id="t">Study pipeline</title>
+  <desc id="d">Five stages left to right: prompt panel, answer engines, answer capture, citation extraction, domain normalisation and scoring.</desc>
+  <style>
+    text { font-family: "JetBrains Mono", ui-monospace, monospace; fill: #fafafa; }
+    .box { fill: #2f3237; stroke: #43474d; stroke-width: 1.5; }
+    .lbl { font-size: 15px; font-weight: 600; }
+    .sub { font-size: 11px; fill: #a1a1aa; }
+    .arrow { stroke: #a1a1aa; stroke-width: 1.5; fill: none; marker-end: url(#m); }
+    .acc { stroke: #249fbd; }
+  </style>
+  <defs>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#a1a1aa"/>
+    </marker>
+  </defs>
+  <rect width="960" height="300" fill="#212428"/>
+  <g>
+    <rect class="box" x="24" y="96" width="160" height="108" rx="8"/>
+    <text class="lbl" x="104" y="140" text-anchor="middle">59 prompts</text>
+    <text class="sub" x="104" y="162" text-anchor="middle">8 verticals</text>
+    <text class="sub" x="104" y="180" text-anchor="middle">fixed panel</text>
+  </g>
+  <path class="arrow" d="M184 150H216"/>
+  <g>
+    <rect class="box" x="216" y="96" width="160" height="108" rx="8"/>
+    <text class="lbl" x="296" y="140" text-anchor="middle">4 engines</text>
+    <text class="sub" x="296" y="162" text-anchor="middle">daily, same hour</text>
+    <text class="sub" x="296" y="180" text-anchor="middle">clean sessions</text>
+  </g>
+  <path class="arrow" d="M376 150H408"/>
+  <g>
+    <rect class="box" x="408" y="96" width="160" height="108" rx="8"/>
+    <text class="lbl" x="488" y="140" text-anchor="middle">Answers</text>
+    <text class="sub" x="488" y="162" text-anchor="middle">raw text + links</text>
+    <text class="sub" x="488" y="180" text-anchor="middle">stored as-is</text>
+  </g>
+  <path class="arrow" d="M568 150H600"/>
+  <g>
+    <rect class="box" x="600" y="96" width="160" height="108" rx="8"/>
+    <text class="lbl" x="680" y="140" text-anchor="middle">Citations</text>
+    <text class="sub" x="680" y="162" text-anchor="middle">position, count</text>
+    <text class="sub" x="680" y="180" text-anchor="middle">per answer</text>
+  </g>
+  <path class="arrow acc" d="M760 150H792"/>
+  <g>
+    <rect class="box" x="792" y="96" width="144" height="108" rx="8" stroke="#249fbd"/>
+    <text class="lbl" x="864" y="140" text-anchor="middle">Score</text>
+    <text class="sub" x="864" y="162" text-anchor="middle">domain-level</text>
+    <text class="sub" x="864" y="180" text-anchor="middle">share of voice</text>
+  </g>
+  <text class="sub" x="24" y="262">Each stage writes an immutable snapshot; re-scoring never touches captured answers.</text>
+</svg>

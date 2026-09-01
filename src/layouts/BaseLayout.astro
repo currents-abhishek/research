@@ -1,0 +1,71 @@
+---
+import SiteHeader from "../components/SiteHeader.astro"
+import SiteFooter from "../components/SiteFooter.astro"
+// Import order matters: chrome.css first, then tokens.css so the token
+// reconciliation in §5.4 wins over the plugin's dark values.
+import "../generated/chrome.css"
+import "../styles/tokens.css"
+import "../styles/research.css"
+import { absolute, path } from "../lib/site"
+import { GA_ID, ADS_ID, gtagInline, opInline } from "../lib/analytics"
+
+interface Props {
+  title: string
+  description: string
+  canonical: string
+  ogType?: "website" | "article"
+  ogImage?: string
+  jsonLd?: unknown[]
+  noindex?: boolean
+}
+const {
+  title,
+  description,
+  canonical,
+  ogType = "website",
+  ogImage = "https://acme.bot/logo/logo-small-wide.svg",
+  jsonLd = [],
+  noindex = false,
+} = Astro.props
+---
+<!doctype html>
+<html lang="en" class="dark" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#2f3237" />
+    <link rel="icon" href="https://acme.bot/favicon.ico" />
+    <link rel="alternate" type="application/rss+xml" title="ACME.BOT Research" href={absolute("rss.xml")} />
+    <link rel="preload" href={path("fonts/JetBrainsMono-latin.woff2")} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:site_name" content="ACME.BOT" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {jsonLd.map((obj) => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
+
+    {/* Analytics — GA4 + Google Ads + OpenPanel, identical to /blog (see lib/analytics.ts). */}
+    <script is:inline defer src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+    <script is:inline set:html={gtagInline(GA_ID, ADS_ID)} />
+    <script is:inline set:html={opInline()} />
+    <script is:inline defer src="https://openpanel.dev/op1.js"></script>
+    <slot name="head" />
+  </head>
+  <body>
+    <SiteHeader />
+    <main id="main"><slot /></main>
+    <SiteFooter />
+  </body>
+</html>

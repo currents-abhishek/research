@@ -1,0 +1,24 @@
+---
+// <Figure src="/images/x.svg" alt="..." label="Figure 1" caption="..." />
+// `src` is a path under public/ (e.g. "/images/foo.svg"); the base is added here.
+import { path } from "../lib/site"
+interface Props {
+  src: string
+  alt: string
+  caption?: string
+  label?: string
+  width?: number
+  height?: number
+}
+const { src, alt, caption, label, width, height } = Astro.props
+const href = /^https?:\/\//.test(src) ? src : path(src)
+---
+<figure class="figure">
+  <img src={href} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+  {(label || caption || Astro.slots.has("default")) && (
+    <figcaption class="caption">
+      {label && <span class="fig-label">{label}</span>}
+      {caption}<slot />
+    </figcaption>
+  )}
+</figure>

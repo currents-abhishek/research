@@ -1,0 +1,1127 @@
+/* ==========================================================================
+   ACME.BOT Toolkit — Plugin Styles
+   Visual language: monochrome zinc + single highlight cyan.
+   Fonts: JetBrains Mono (mono/body/display), Patrick Hand/Kalam (hand-drawn body),
+   JetBrains Mono replaces VT323 for headers/display.
+   ========================================================================== */
+
+
+/* TT3 / FSE themes apply padding-top to .wp-site-blocks via global styles —
+   that padding shows up as a blank gap above the sticky header. Reset it.
+   The <main id="wp--skip-link--target"> wrapper inlines its own
+   margin-top:var(--wp--preset--spacing--40) (and margin-block-start), which
+   wins over class selectors — kill it via id + !important. Bugfix 07052026 */
+.wp-site-blocks { padding-top: 0 !important; }
+#wp--skip-link--target { margin-top: 0 !important; margin-block-start: 0 !important; }
+
+/* The site header uses width:100vw + negative margins to break out of the
+   wp-block-group constraint. 100vw includes the vertical scrollbar's width,
+   so the header overflows the visible viewport and triggers a horizontal
+   scrollbar with no real content. Clip horizontal overflow at the root.
+   `overflow-x: clip` (vs hidden) keeps position:sticky on the header
+   working — `hidden` would establish a scroll container and break sticky.
+   Bugfix 07052026 */
+html, body { overflow-x: clip; }
+
+/* Editor panel sits right after the post body — give it breathing room
+   so it doesn't feel glued to the last paragraph. Bugfix 07052026 */
+.acmebot-post-shell > div > .acmebot-panel { margin-top: 56px; }
+
+/* Hide WP-derived author surfaces site-wide. The [acmebot_editors] /
+   [acmebot_author_bio] shortcodes are kept (now rendering a fixed editor
+   panel), so we explicitly do NOT hide .acmebot-author-card /
+   .acmebot-author-bio here. Bugfix 06052026 */
+.acmebot-post-meta__author,
+.acmebot-card__meta .author,
+.wp-block-post-author,
+.wp-block-post-author-name,
+.wp-block-post-author-biography,
+.wp-block-avatar { display: none !important; }
+
+:root {
+  /* ── Raw palette (Tailwind zinc + highlight) ─────────────── */
+  --acme-color-white: #ffffff;
+  --acme-color-black: #000000;
+
+  --acme-zinc-50:  #fafafa;
+  --acme-zinc-100: #f4f4f5;
+  --acme-zinc-200: #e4e4e7;
+  --acme-zinc-300: #d4d4d8;
+  --acme-zinc-400: #a1a1aa;
+  --acme-zinc-500: #71717a;
+  --acme-zinc-600: #52525b;
+  --acme-zinc-700: #3f3f46;
+  --acme-zinc-800: #27272a;
+  --acme-zinc-900: #18181b;
+  --acme-zinc-950: #09090b;
+
+  --acme-highlight: #249fbd;
+
+  /* ── Semantic tokens (light) ─────────────────────────────── */
+  --acme-bg:              var(--acme-color-white);
+  --acme-fg:              var(--acme-zinc-950);
+  --acme-primary:         var(--acme-zinc-900);
+  --acme-primary-fg:      var(--acme-zinc-50);
+  --acme-secondary:       var(--acme-zinc-100);
+  --acme-secondary-fg:    var(--acme-zinc-900);
+  --acme-muted:           var(--acme-zinc-100);
+  --acme-muted-fg:        var(--acme-zinc-500);
+  --acme-border:          var(--acme-zinc-200);
+  --acme-ring:            var(--acme-zinc-900);
+
+  /* ── Type family ─────────────────────────────────────────── */
+  --acme-font-mono:  "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --acme-font-sans:  var(--acme-font-mono);
+  --acme-font-display: "JetBrains Mono", ui-monospace, monospace;
+  --acme-font-hand-display: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --acme-font-hand-body:    "Patrick Hand", "Kalam", "Comic Sans MS", cursive;
+
+  /* ── Doodle palette ──────────────────────────────────────── */
+  --acme-doodle-stroke: #1c1c1f;
+  --acme-doodle-green:  #4caf50;
+  --acme-doodle-red:    #e0524a;
+  --acme-doodle-cyan:   #56b9d5;
+  --acme-doodle-yellow: #f6dd6c;
+  --acme-doodle-pink:   #f0b8b1;
+  --acme-doodle-blue:   #b9d6e8;
+
+  --acme-rail-w: 320px;
+}
+
+/* ── Dark mode tokens ─────────────────────────────────────── */
+.dark, [data-theme="dark"] {
+  --acme-bg:           var(--acme-zinc-950);
+  --acme-fg:           var(--acme-zinc-50);
+  --acme-primary:      var(--acme-zinc-50);
+  --acme-primary-fg:   var(--acme-zinc-900);
+  --acme-secondary:    var(--acme-zinc-800);
+  --acme-secondary-fg: var(--acme-zinc-50);
+  --acme-muted:        var(--acme-zinc-800);
+  --acme-muted-fg:     var(--acme-zinc-400);
+  --acme-border:       var(--acme-zinc-800);
+  --acme-ring:         var(--acme-zinc-300);
+}
+.dark body, [data-theme="dark"] body {
+  background: var(--acme-bg); color: var(--acme-fg);
+}
+
+/* ============================================================
+   SITE HEADER
+   ============================================================ */
+.acmebot-site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in oklab, var(--acme-bg) 92%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  /* Break out of TT3's wp-block-group / has-global-padding / is-layout-constrained wrappers.
+     WP's constrained layout applies max-width + margin:auto !important to direct children,
+     so we must override both with !important to escape the content-width "tunnel". Bugfix 06052026 */
+  width: 100vw;
+  max-width: none !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  box-sizing: border-box;
+}
+.acmebot-site-header__inner {
+  max-width: 1280px; margin: 0 auto;
+  padding: 6px 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.acmebot-site-header__inner > .acmebot-brand { flex: 0 0 auto; }
+.acmebot-site-header__inner > .acmebot-header-tools { flex: 0 0 auto; margin-left: auto; }
+/* wpautop may wrap inline children of .acmebot-header-tools in a stray <p>;
+   unwrap so the search/CTA stay on the brand row. Bugfix 06052026 */
+.acmebot-header-tools > p { display: contents; }
+.acmebot-site-header__inner > p:empty { display: none; }
+.acmebot-brand__logo {
+  display: block; height: 22px; width: auto;
+}
+.acmebot-brand {
+  display: flex; align-items: center; gap: 10px; text-decoration: none;
+  font-family: var(--acme-font-mono); color: var(--acme-fg);
+}
+.acmebot-brand__name {
+  font-weight: 700; font-size: 14px; letter-spacing: 0.02em;
+}
+.acmebot-brand__sub {
+  font-family: var(--acme-font-mono); font-size: 13px; font-weight: 600;
+  border-left: 1px solid var(--acme-border);
+  padding-left: 10px; color: var(--acme-muted-fg);
+}
+
+.acmebot-primary-nav {
+  display: flex; gap: 4px; flex-wrap: wrap; align-items: center;
+  font-family: var(--acme-font-mono); font-size: 13px;
+  list-style: none; padding: 0; margin: 0;
+}
+.acmebot-primary-nav li { margin: 0; }
+.acmebot-primary-nav a {
+  text-decoration: none; padding: 6px 10px; border-radius: 4px;
+  color: var(--acme-fg); white-space: nowrap;
+}
+.acmebot-primary-nav a:hover {
+  background: var(--acme-muted); color: var(--acme-highlight);
+}
+.acmebot-primary-nav .current-menu-item > a,
+.acmebot-primary-nav a[aria-current="page"] {
+  color: var(--acme-highlight);
+}
+.acmebot-primary-nav .acmebot-nav-sep {
+  width: 1px; height: 14px; background: var(--acme-border); margin: 0 6px;
+}
+
+.acmebot-header-tools { display: flex; gap: 8px; align-items: center; }
+
+.acmebot-search-box {
+  display: flex; align-items: center; gap: 6px;
+  border: 1px solid var(--acme-border); border-radius: 6px;
+  padding: 4px 8px;
+  font-family: var(--acme-font-mono); font-size: 12px;
+  min-width: 200px;
+  background: var(--acme-bg); color: var(--acme-muted-fg);
+}
+.acmebot-search-box input {
+  background: transparent; border: 0; outline: 0;
+  font-family: var(--acme-font-mono); font-size: 12px; color: var(--acme-fg);
+  flex: 1; min-width: 0;
+}
+.acmebot-search-box kbd {
+  font-family: var(--acme-font-mono); font-size: 10px;
+  border: 1px solid var(--acme-border); padding: 1px 4px;
+  border-radius: 3px; background: transparent; color: var(--acme-muted-fg);
+}
+
+.acmebot-theme-toggle {
+  width: 32px; height: 32px; border-radius: 6px;
+  border: 1px solid var(--acme-border);
+  background: var(--acme-bg); color: var(--acme-fg);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.acmebot-theme-toggle:hover { background: var(--acme-muted); }
+.acmebot-theme-toggle .acmebot-icon-sun  { display: inline; }
+.acmebot-theme-toggle .acmebot-icon-moon { display: none; }
+.dark .acmebot-theme-toggle .acmebot-icon-sun  { display: none; }
+.dark .acmebot-theme-toggle .acmebot-icon-moon { display: inline; }
+
+/* ============================================================
+   SITE FOOTER
+   ============================================================ */
+.acmebot-site-footer {
+  border-top: 1px solid var(--acme-border);
+  margin-top: 80px;
+  padding: 40px 0;
+  font-family: var(--acme-font-mono);
+  /* Break out of TT3 wrappers */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  box-sizing: border-box;
+}
+.acmebot-site-footer__inner {
+  max-width: 1280px; margin: 0 auto; padding: 0 24px;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1.2fr; gap: 32px;
+  font-size: 12px;
+}
+.acmebot-site-footer h5 {
+  font-family: var(--acme-font-mono);
+  text-transform: uppercase; letter-spacing: .08em;
+  font-size: 11px; color: var(--acme-highlight); margin: 0 0 10px;
+}
+.acmebot-site-footer ul {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; gap: 6px;
+}
+.acmebot-site-footer a:not(.acmebot-btn-cta) {
+  color: var(--acme-muted-fg); text-decoration: none;
+}
+.acmebot-site-footer a:not(.acmebot-btn-cta):hover { color: var(--acme-fg); }
+/* Keep the CTA's primary-fg color; the generic footer-a rule above would
+   otherwise win on specificity and tint the button text muted-grey. Bugfix 07052026 */
+.acmebot-site-footer .acmebot-btn-cta { color: var(--acme-primary-fg); }
+
+.acmebot-footer-mast {
+  font-family: var(--acme-font-display);
+  font-size: 32px; font-weight: 700; line-height: 1;
+  letter-spacing: 0.02em;
+}
+.acmebot-footer-brand { display: inline-block; }
+.acmebot-footer-brand__logo { display: block; height: 28px; width: auto; }
+.acmebot-footer-tag {
+  color: var(--acme-muted-fg); margin: 8px 0 12px; max-width: 300px;
+}
+.acmebot-footer-bot {
+  max-width: 1280px; margin: 24px auto 0;
+  padding: 16px 24px 0;
+  border-top: 1px solid var(--acme-border);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  font-size: 11px; color: var(--acme-muted-fg);
+}
+
+@media (max-width: 820px) {
+  .acmebot-site-footer__inner { grid-template-columns: 1fr 1fr; }
+  .acmebot-search-box { display: none; }
+  .acmebot-primary-nav { display: none; }
+}
+
+/* ── Breadcrumbs ──────────────────────────────────────────── */
+.acmebot-crumbs {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  font-family: var(--acme-font-mono);
+  font-size: 12px; color: var(--acme-muted-fg);
+  padding: 14px 0; border-bottom: 1px dashed var(--acme-border);
+  max-width: 1280px; margin: 0 auto;
+}
+.acmebot-crumbs a { color: var(--acme-muted-fg); text-decoration: none; }
+.acmebot-crumbs a:hover { color: var(--acme-highlight); }
+.acmebot-crumbs .arrow { opacity: .5; }
+.acmebot-crumbs strong { color: var(--acme-fg); font-weight: 600; }
+.acmebot-crumbs .acmebot-crumbs__stats {
+  margin-left: auto; display: flex; gap: 14px; font-size: 11px;
+}
+
+/* ── Hero / Featured Post ─────────────────────────────────── */
+/* Mirror the .acmebot-home-body grid so the hero text column lines up with
+   "Latest from the field" below. The first <div> (text) sits in the middle
+   column, .acmebot-hero__art sits in the right rail column, and the left
+   column stays empty (matches the topics-nav column spacing). Bugfix 07052026 */
+.acmebot-hero {
+  display: grid;
+  grid-template-columns: 220px 1fr var(--acme-rail-w);
+  gap: 32px; align-items: center;
+  padding: 16px 0 20px; border-bottom: 1px solid var(--acme-border);
+  max-width: 1280px; margin: 0 auto;
+}
+.acmebot-hero > div:first-child { grid-column: 2; }
+.acmebot-hero > .acmebot-hero__art { grid-column: 3; }
+.acmebot-hero__tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--acme-font-mono);
+  font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--acme-highlight);
+}
+.acmebot-hero__tag .dot {
+  width: 6px; height: 6px; background: var(--acme-highlight);
+  border-radius: 50%; display: inline-block;
+}
+.acmebot-hero__title {
+  font-family: var(--acme-font-hand-display); font-weight: 700;
+  font-size: 22px; line-height: 1.15;
+  letter-spacing: -0.005em;
+  margin: 8px 0 8px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.acmebot-hero__title a {
+  text-decoration: none; color: inherit;
+}
+.acmebot-hero__title a:hover { text-decoration: underline; }
+.acmebot-hero__deck {
+  font-family: var(--acme-font-mono); font-size: 13px; line-height: 1.5;
+  color: var(--acme-muted-fg); margin: 0 0 10px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.acmebot-hero__meta {
+  display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center;
+  font-family: var(--acme-font-mono);
+  font-size: 12px; color: var(--acme-muted-fg);
+}
+.acmebot-hero__meta .avatar {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-block; border: 1px solid var(--acme-border);
+}
+.acmebot-hero__meta strong { color: var(--acme-fg); }
+.acmebot-hero__actions {
+  margin-top: 12px; display: flex; gap: 10px; align-items: center;
+}
+.acmebot-hero__art {
+  border: 1px solid var(--acme-border); border-radius: 8px;
+  background: var(--acme-bg); padding: 0;
+  position: relative; overflow: hidden;
+  aspect-ratio: 4 / 3;
+}
+.acmebot-hero__art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Tag pills */
+.acmebot-tag-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--acme-font-mono);
+  font-size: 11px; padding: 3px 8px;
+  border: 1px solid var(--acme-border); border-radius: 999px;
+  background: var(--acme-bg); text-decoration: none; color: var(--acme-fg);
+}
+.acmebot-tag-pill:hover { border-color: var(--acme-highlight); color: var(--acme-highlight); }
+.acmebot-tag-pill .hash { color: var(--acme-muted-fg); }
+
+/* CTA button */
+.acmebot-btn-cta {
+  font-family: var(--acme-font-mono); font-size: 12px; font-weight: 600;
+  background: var(--acme-primary); color: var(--acme-primary-fg);
+  border: 0; border-radius: 6px; padding: 5px 12px; cursor: pointer;
+  text-decoration: none; display: inline-block;
+}
+.acmebot-btn-cta:hover { opacity: 0.9; }
+
+/* ── Home body 3-col grid ─────────────────────────────────── */
+.acmebot-home-body {
+  display: grid; grid-template-columns: 220px 1fr var(--acme-rail-w); gap: 32px;
+  padding: 32px 0 64px;
+  max-width: 1280px; margin: 0 auto;
+}
+/* Wrapper that snaps standalone shortcodes (section header, posts grid, CTA)
+   into the same center column as .acmebot-home-body. When nested inside the
+   home-body grid the wrapper collapses (display:contents) so it doesn't add
+   a second offset. Bugfix 07052026 */
+.acmebot-aligned {
+  display: grid;
+  grid-template-columns: 220px 1fr var(--acme-rail-w);
+  gap: 32px;
+  max-width: 1280px; margin: 0 auto;
+}
+.acmebot-aligned > * { grid-column: 2; min-width: 0; }
+.acmebot-home-body .acmebot-aligned { display: contents; }
+
+/* ── Section Headers ──────────────────────────────────────── */
+.acmebot-section-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  border-bottom: 1px solid var(--acme-border);
+  padding-bottom: 10px; margin: 0 0 18px;
+}
+.acmebot-section-header h2 {
+  font-family: var(--acme-font-hand-display); font-weight: 700;
+  font-size: 32px; line-height: 1; margin: 0;
+}
+.acmebot-section-header a {
+  font-family: var(--acme-font-mono);
+  font-size: 12px; color: var(--acme-muted-fg); text-decoration: none;
+}
+.acmebot-section-header a:hover { color: var(--acme-highlight); }
+
+/* ── Pillar Nav (sticky sidebar) ──────────────────────────── */
+.acmebot-pillar-nav { position: sticky; top: 80px; align-self: start; }
+.acmebot-pillar-nav h3 {
+  font-family: var(--acme-font-mono); text-transform: uppercase; letter-spacing: .08em;
+  font-size: 11px; color: var(--acme-highlight); margin: 0 0 10px;
+}
+.acmebot-pillar-nav ul { list-style: none; padding: 0; margin: 0; }
+.acmebot-pillar-nav li {
+  padding: 6px 0; border-bottom: 1px dashed var(--acme-border);
+  font-family: var(--acme-font-mono); font-size: 13px;
+}
+.acmebot-pillar-nav li:last-child { border-bottom: 0; }
+.acmebot-pillar-nav a {
+  text-decoration: none; display: flex; justify-content: space-between;
+  align-items: center; gap: 8px; color: var(--acme-fg);
+}
+.acmebot-pillar-nav a:hover { color: var(--acme-highlight); }
+.acmebot-pillar-nav .count {
+  font-size: 11px; color: var(--acme-muted-fg); font-variant-numeric: tabular-nums;
+}
+
+/* Editor's pick cluster in pillar nav */
+.acmebot-pillar-nav .acmebot-cluster {
+  margin-top: 8px;
+}
+
+/* ── Post Cards Grid ──────────────────────────────────────── */
+.acmebot-post-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 28px 32px;
+}
+
+.acmebot-card {
+  display: grid; grid-template-rows: auto auto 1fr auto; gap: 8px;
+  border-top: 1px solid var(--acme-border); padding-top: 20px;
+  /* Skip paint for off-screen cards; mobile FCP/LCP win when the page has
+     many generative-placeholder thumbs (each thumb runs a CSS blur filter
+     which is GPU-expensive). 380px is the rough card height — used as the
+     intrinsic-size reserve so layout doesn't shift. Bugfix 07052026 */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 380px;
+}
+.acmebot-card__thumb {
+  border: 1px solid var(--acme-border); border-radius: 8px;
+  aspect-ratio: 16 / 9; background: var(--acme-muted);
+  margin-bottom: 8px; overflow: hidden; position: relative;
+}
+.acmebot-card__thumb img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.acmebot-card__thumb--placeholder {
+  display: grid; place-items: center;
+}
+.acmebot-card__kicker {
+  font-family: var(--acme-font-mono);
+  font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--acme-highlight); display: flex; gap: 8px; align-items: center;
+}
+.acmebot-card__kicker .read { color: var(--acme-muted-fg); }
+.acmebot-card__title {
+  font-family: var(--acme-font-hand-display); font-weight: 700;
+  font-size: 26px; line-height: 1.05; margin: 0;
+}
+.acmebot-card__title a { text-decoration: none; color: inherit; }
+.acmebot-card__title a:hover { color: var(--acme-highlight); }
+.acmebot-card__excerpt {
+  font-family: var(--acme-font-mono);
+  font-size: 13px; color: var(--acme-muted-fg); line-height: 1.55; margin: 0;
+}
+.acmebot-card__meta {
+  display: flex; gap: 12px; font-family: var(--acme-font-mono);
+  font-size: 11px; color: var(--acme-muted-fg);
+  align-items: center; margin-top: 4px;
+}
+.acmebot-card__meta .author { color: var(--acme-fg); font-weight: 600; }
+
+/* ── Compact List (Most cited) ────────────────────────────── */
+.acmebot-compact-list { display: grid; gap: 14px; list-style: none; padding: 0; margin: 0; }
+.acmebot-compact-item {
+  display: grid; grid-template-columns: 32px 1fr auto; gap: 14px; align-items: start;
+  padding-bottom: 14px; border-bottom: 1px dashed var(--acme-border);
+}
+.acmebot-compact-item:last-child { border-bottom: 0; }
+.acmebot-compact-item__num {
+  font-family: var(--acme-font-display); font-size: 28px; font-weight: 700;
+  line-height: 1; color: var(--acme-muted-fg);
+}
+.acmebot-compact-item h4 {
+  font-family: var(--acme-font-mono); font-weight: 600; font-size: 14px;
+  margin: 0 0 4px; line-height: 1.3;
+}
+.acmebot-compact-item h4 a { text-decoration: none; color: inherit; }
+.acmebot-compact-item h4 a:hover { color: var(--acme-highlight); }
+.acmebot-compact-item__meta {
+  font-family: var(--acme-font-mono);
+  font-size: 11px; color: var(--acme-muted-fg);
+}
+.acmebot-compact-item__when {
+  font-family: var(--acme-font-mono);
+  font-size: 11px; color: var(--acme-muted-fg); white-space: nowrap;
+}
+
+/* ── Cluster Cards ────────────────────────────────────────── */
+.acmebot-clusters-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+}
+.acmebot-cluster {
+  border: 1px solid var(--acme-border); border-radius: 12px; padding: 18px;
+  display: grid; gap: 10px; text-decoration: none; color: var(--acme-fg);
+  background:
+    repeating-linear-gradient(45deg, transparent 0 8px, color-mix(in oklab, var(--acme-muted) 50%, transparent) 8px 9px),
+    var(--acme-bg);
+}
+.acmebot-cluster:hover { border-color: var(--acme-highlight); }
+.acmebot-cluster__pill {
+  font-family: var(--acme-font-mono);
+  font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--acme-highlight); border: 1px solid var(--acme-highlight); border-radius: 999px;
+  padding: 3px 8px; align-self: start;
+}
+.acmebot-cluster h3 {
+  font-family: var(--acme-font-hand-display); font-size: 28px; margin: 0; line-height: 1.05;
+}
+.acmebot-cluster h3 a { color: inherit; text-decoration: none; }
+.acmebot-cluster h3 a:hover { color: var(--acme-highlight); }
+.acmebot-cluster ul { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 6px; }
+.acmebot-cluster li { font-family: var(--acme-font-mono); font-size: 12px; }
+.acmebot-cluster li a {
+  display: flex; gap: 6px; align-items: center; text-decoration: none; color: inherit;
+}
+.acmebot-cluster li a:hover { color: var(--acme-highlight); }
+.acmebot-cluster li .arrow { color: var(--acme-muted-fg); }
+
+/* ── Sidebar ──────────────────────────────────────────────── */
+.acmebot-sidebar > section + section { margin-top: 28px; }
+.acmebot-panel {
+  border: 1px solid var(--acme-border); border-radius: 12px; padding: 16px;
+  background: var(--acme-bg);
+}
+.acmebot-panel h3 {
+  font-family: var(--acme-font-mono); text-transform: uppercase; letter-spacing: .08em;
+  font-size: 11px; color: var(--acme-highlight); margin: 0 0 12px;
+}
+
+/* Subscribe panel */
+.acmebot-subscribe { background: var(--acme-secondary); }
+.acmebot-subscribe h3 { color: var(--acme-fg); }
+.acmebot-subscribe p {
+  font-family: var(--acme-font-mono);
+  font-size: 12px; color: var(--acme-muted-fg); margin: 0 0 10px;
+}
+.acmebot-subscribe form { display: flex; gap: 6px; }
+.acmebot-subscribe input[type="email"] {
+  flex: 1; min-width: 0; padding: 8px 10px; border-radius: 6px;
+  border: 1px solid var(--acme-border); background: var(--acme-bg); color: var(--acme-fg);
+  font-family: var(--acme-font-mono); font-size: 12px; outline: 0;
+}
+.acmebot-subscribe input[type="email"]:focus { border-color: var(--acme-ring); }
+.acmebot-subscribe button {
+  padding: 8px 12px; border-radius: 6px; border: 0; cursor: pointer;
+  background: var(--acme-primary); color: var(--acme-primary-fg);
+  font-family: var(--acme-font-mono); font-size: 12px; font-weight: 600;
+}
+.acmebot-subscribe__fine {
+  font-family: var(--acme-font-mono);
+  font-size: 10px; color: var(--acme-muted-fg); margin-top: 8px;
+}
+
+/* Tag cloud */
+.acmebot-tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Author cards */
+.acmebot-author-card {
+  display: grid; grid-template-columns: 56px 1fr; gap: 12px;
+}
+.acmebot-author-card + .acmebot-author-card { margin-top: 12px; }
+.acmebot-author-card__ava {
+  width: 56px; height: 56px; border-radius: 8px; border: 1px solid var(--acme-border);
+  background: var(--acme-muted); display: grid; place-items: center;
+  font-family: var(--acme-font-display); font-size: 28px; font-weight: 700;
+  color: #fff;
+}
+.acmebot-author-card__name {
+  font-family: var(--acme-font-mono); font-weight: 600; font-size: 13px;
+}
+.acmebot-author-card__name a { color: inherit; text-decoration: none; }
+.acmebot-author-card__name a:hover { color: var(--acme-highlight); }
+.acmebot-author-card__role {
+  font-family: var(--acme-font-mono); font-size: 11px; color: var(--acme-muted-fg);
+}
+.acmebot-author-card__bio {
+  font-family: var(--acme-font-mono);
+  font-size: 12px; color: var(--acme-muted-fg); margin: 6px 0 0; line-height: 1.5;
+}
+
+/* This week panel */
+.acmebot-this-week { background: var(--acme-secondary); }
+.acmebot-this-week ul {
+  list-style: none; padding: 0; margin: 0; display: grid; gap: 10px;
+  font-family: var(--acme-font-mono); font-size: 12px;
+}
+
+/* ── Inline CTA Banner ────────────────────────────────────── */
+.acmebot-cta-inline {
+  border: 1px solid var(--acme-border); border-radius: 12px;
+  padding: 2rem; text-align: center; margin: 3rem 0;
+  background: var(--acme-primary); color: var(--acme-primary-fg);
+}
+.acmebot-cta-inline h3 {
+  font-family: var(--acme-font-hand-display);
+  font-size: 32px; margin: 0 0 0.5rem 0;
+}
+.acmebot-cta-inline p {
+  font-family: var(--acme-font-mono);
+  margin: 0 0 1rem 0; opacity: 0.85; font-size: 14px;
+}
+.acmebot-cta-inline a.acmebot-cta-btn {
+  display: inline-block;
+  border: 2px solid var(--acme-primary-fg); color: var(--acme-primary-fg);
+  padding: 0.6em 1.8em; text-decoration: none; text-transform: uppercase;
+  font-family: var(--acme-font-mono);
+  font-size: 0.85rem; letter-spacing: 0.08em; border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+.acmebot-cta-inline a.acmebot-cta-btn:hover {
+  background: var(--acme-primary-fg); color: var(--acme-primary);
+}
+
+/* ── Read Time Badge ──────────────────────────────────────── */
+.acmebot-read-time {
+  font-family: var(--acme-font-mono);
+  font-size: 0.75rem; color: var(--acme-muted-fg);
+}
+
+/* ============================================================
+   POST PAGE — single post layout (3-col: TOC | body | related)
+   ============================================================ */
+
+:root {
+  --acme-content-w: 720px;
+}
+
+/* Post shell — 3 column grid */
+.acmebot-post-shell {
+  display: grid;
+  grid-template-columns: 220px var(--acme-content-w) 280px;
+  gap: 48px;
+  padding: 24px 0 80px;
+  max-width: 1280px; margin: 0 auto;
+}
+.acmebot-post-shell.layout-two {
+  grid-template-columns: var(--acme-content-w) 320px;
+  gap: 64px; max-width: 1120px;
+}
+.acmebot-post-shell.layout-one {
+  grid-template-columns: minmax(0, 760px);
+  max-width: 760px; margin-left: auto; margin-right: auto;
+}
+.acmebot-post-shell.layout-one .acmebot-post-aside,
+.acmebot-post-shell.layout-one .acmebot-toc-rail { display: none; }
+.acmebot-post-shell.layout-two .acmebot-toc-rail { display: none; }
+
+/* TOC Rail (left sidebar) */
+.acmebot-toc-rail { position: sticky; top: 80px; align-self: start; }
+.acmebot-toc-rail h4 {
+  font-family: var(--acme-font-mono); text-transform: uppercase; letter-spacing: .08em;
+  font-size: 11px; color: var(--acme-highlight); margin: 0 0 10px;
+}
+.acmebot-toc-rail ol {
+  list-style: none; padding: 0; margin: 0; counter-reset: toc;
+  font-family: var(--acme-font-mono); font-size: 12px;
+}
+.acmebot-toc-rail li {
+  counter-increment: toc; padding: 4px 0 4px 22px; position: relative; line-height: 1.4;
+}
+.acmebot-toc-rail li::before {
+  content: counter(toc, decimal-leading-zero);
+  position: absolute; left: 0; top: 4px;
+  font-size: 10px; color: var(--acme-muted-fg); font-variant-numeric: tabular-nums;
+}
+.acmebot-toc-rail li.indent { padding-left: 38px; }
+.acmebot-toc-rail li.indent::before { left: 16px; content: "↳"; }
+.acmebot-toc-rail a {
+  text-decoration: none; color: var(--acme-muted-fg);
+  transition: color 120ms;
+}
+.acmebot-toc-rail a:hover { color: var(--acme-fg); }
+.acmebot-toc-rail a.active {
+  color: var(--acme-highlight); font-weight: 600;
+}
+.acmebot-toc-rail li:has(a.active)::before {
+  color: var(--acme-highlight); font-weight: 600;
+}
+.acmebot-toc-rail .acmebot-progress {
+  height: 2px; background: var(--acme-muted); border-radius: 2px;
+  margin-bottom: 14px; overflow: hidden;
+}
+.acmebot-toc-rail .acmebot-progress-fill {
+  height: 100%; background: var(--acme-highlight); width: 0%;
+  transition: width 120ms linear;
+}
+.acmebot-toc-rail .acmebot-cite {
+  margin-top: 24px; font-family: var(--acme-font-mono);
+  font-size: 11px; color: var(--acme-muted-fg); line-height: 1.5;
+}
+.acmebot-toc-rail .acmebot-cite__label {
+  margin-bottom: 6px; color: var(--acme-highlight);
+  text-transform: uppercase; letter-spacing: .08em; font-weight: 600;
+}
+
+/* Post hero */
+.acmebot-post-hero { padding: 6px 0 24px; }
+.acmebot-post-pillar-callout {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--acme-border); border-radius: 6px;
+  padding: 6px 10px;
+  font-family: var(--acme-font-mono);
+  font-size: 11px; color: var(--acme-muted-fg);
+  text-decoration: none; margin-bottom: 18px;
+}
+.acmebot-post-pillar-callout strong { color: var(--acme-fg); }
+.acmebot-post-pillar-callout:hover {
+  border-color: var(--acme-highlight); color: var(--acme-highlight);
+}
+
+.acmebot-post-title {
+  font-family: var(--acme-font-hand-display); font-weight: 700;
+  font-size: 38px; line-height: 1.05;
+  letter-spacing: -0.005em; margin: 0 0 14px;
+  border-bottom: 0;
+}
+.acmebot-post-title::after,
+.acmebot-post-title::before,
+.acmebot-hero__title::after,
+.acmebot-hero__title::before { content: none; }
+.acmebot-post-deck {
+  font-family: var(--acme-font-mono);
+  font-size: 17px; line-height: 1.55;
+  color: var(--acme-muted-fg); margin: 0 0 22px;
+}
+
+.acmebot-post-meta {
+  display: flex; flex-wrap: wrap; gap: 12px 20px;
+  align-items: center; justify-content: space-between;
+  font-family: var(--acme-font-mono);
+  font-size: 12px; color: var(--acme-muted-fg);
+  padding: 14px 0;
+  border-top: 1px solid var(--acme-border);
+  border-bottom: 1px solid var(--acme-border);
+  margin-bottom: 28px;
+}
+.acmebot-post-meta__info {
+  display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center;
+}
+.acmebot-post-meta__author { display: inline-flex; gap: 8px; align-items: center; }
+.acmebot-post-meta__author-name { color: var(--acme-fg); font-weight: 600; }
+.acmebot-post-meta__avatar {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 1px solid var(--acme-border);
+  background: linear-gradient(135deg, #bb8975, #56b9d5);
+  flex-shrink: 0;
+}
+.acmebot-post-meta .pipe { color: var(--acme-border); }
+.acmebot-post-meta__share { display: flex; gap: 8px; flex-shrink: 0; }
+.acmebot-post-meta__share a {
+  width: 26px; height: 26px; border-radius: 6px;
+  border: 1px solid var(--acme-border);
+  display: grid; place-items: center; color: var(--acme-muted-fg);
+  text-decoration: none;
+}
+.acmebot-post-meta__share a:hover {
+  color: var(--acme-highlight); border-color: var(--acme-highlight);
+}
+
+/* Article body — applied via filter to single-post `the_content` */
+.acmebot-article-body {
+  font-family: var(--acme-font-mono); font-size: 16px; line-height: 1.7;
+}
+.acmebot-article-body > * + * { margin-top: 1.25em; }
+/* Paragraph-to-paragraph spacing was feeling cramped at 1.25em on the
+   16px / 1.7 line-height body; bump to 1.6em between paragraphs only.
+   Bugfix 07052026 */
+.acmebot-article-body > p + p { margin-top: 1.6em; }
+
+.acmebot-article-body h2,
+.acmebot-article-body .acme-h2-wrap {
+  margin-top: 2.4em; margin-bottom: 0.75em;
+}
+.acmebot-article-body h2,
+.acmebot-article-body .acme-h2-wrap > h2 {
+  font-family: var(--acme-font-hand-display); font-weight: 700;
+  font-size: 38px; line-height: 1.05; letter-spacing: -0.005em;
+  text-align: center;
+  border-bottom: 0;
+}
+.acmebot-article-body h2::before { content: none; }
+/* Hand-drawn squiggle underline that "draws itself" left-to-right when the
+   heading scrolls into view. The squiggle is an SVG mask over a solid block
+   of var(--acme-highlight), so it picks up theme colors automatically.
+   We animate clip-path (not width) so the mask stays at its natural aspect
+   ratio and the squiggle never gets squished while revealing. The .in-view
+   class is toggled by setupHeadingUnderlines() in acmebot-toolkit.js. */
+.acmebot-article-body h2::after {
+  content: '';
+  display: block;
+  width: 240px;
+  max-width: 70%;
+  height: 12px;
+  margin: 10px auto 0;
+  background-color: var(--acme-fg);
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 12'><path d='M3 7 C 40 3, 80 10, 120 6 C 160 3, 200 9, 257 5' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'/></svg>") no-repeat center / 100% 100%;
+          mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 12'><path d='M3 7 C 40 3, 80 10, 120 6 C 160 3, 200 9, 257 5' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'/></svg>") no-repeat center / 100% 100%;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.9s cubic-bezier(.6,.05,.3,1) 0.1s;
+}
+.acmebot-article-body h2.in-view::after {
+  clip-path: inset(0 0 0 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .acmebot-article-body h2::after { transition: none; clip-path: inset(0 0 0 0); }
+}
+.acmebot-article-body h3 {
+  font-family: var(--acme-font-hand-display); font-weight: 700;
+  font-size: 28px; line-height: 1.1;
+  margin-top: 1.9em; margin-bottom: 0.55em;
+}
+.acmebot-article-body p { margin: 0; }
+.acmebot-article-body p a {
+  color: var(--acme-fg); text-decoration: underline;
+  text-decoration-thickness: 1px; text-underline-offset: 3px;
+}
+.acmebot-article-body p a:hover { color: var(--acme-highlight); }
+
+.acmebot-article-body ul,
+.acmebot-article-body ol { padding-left: 1.4em; margin: 0; }
+.acmebot-article-body li { margin-bottom: 0.4em; }
+
+.acmebot-article-body blockquote {
+  margin: 1.6em 0;
+  padding: 4px 0 4px 20px;
+  border-left: 3px solid var(--acme-highlight);
+  font-style: normal;
+}
+.acmebot-article-body blockquote::before,
+.acmebot-article-body blockquote::after { content: none; }
+.acmebot-article-body blockquote p {
+  font-family: var(--acme-font-mono);
+  font-size: 16px; line-height: 1.6; color: var(--acme-fg);
+}
+.acmebot-article-body blockquote cite {
+  display: block; margin-top: 8px; font-style: normal;
+  font-size: 13px; color: var(--acme-muted-fg);
+}
+
+/* Inline figures / doodles */
+.acmebot-article-body figure.doodle,
+.acmebot-figure {
+  margin: 28px 0; border: 1px solid var(--acme-border); border-radius: 10px;
+  padding: 18px; background: var(--acme-bg);
+}
+.acmebot-article-body figure.doodle figcaption,
+.acmebot-figure figcaption {
+  font-family: var(--acme-font-mono);
+  font-size: 12px; color: var(--acme-muted-fg);
+  margin-top: 10px; text-align: center;
+}
+
+/* Inline images inside the post body: cap displayed size for readability
+   and signal click-to-zoom. The browser still picks the smallest srcset
+   candidate that fills this box, so cap = perf win. Lightbox JS in
+   acmebot-toolkit.js opens the full-resolution source in a modal. */
+.acmebot-article-body img {
+  display: block;
+  max-width: 100%;
+  max-height: 520px;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
+  border-radius: 8px;
+  cursor: zoom-in;
+}
+.acmebot-article-body figure img { margin: 0 auto; }
+
+/* Lightbox overlay */
+.acmebot-lightbox {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0, 0, 0, 0.85);
+  display: none; align-items: center; justify-content: center;
+  padding: 24px; cursor: zoom-out;
+  overscroll-behavior: contain;
+}
+.acmebot-lightbox.is-open { display: flex; overflow: auto; }
+.acmebot-lightbox img {
+  max-width: 100%; max-height: 100%;
+  width: auto; height: auto;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+}
+.acmebot-lightbox__close {
+  position: absolute; top: 16px; right: 20px;
+  background: transparent; border: 0; color: #fff;
+  font-size: 28px; line-height: 1; cursor: pointer;
+  font-family: var(--acme-font-mono);
+}
+
+/* Inline link callout (cluster cross-link) */
+.acmebot-inline-link {
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: 12px; align-items: center;
+  border: 1px solid var(--acme-border); border-left: 3px solid var(--acme-highlight);
+  border-radius: 8px; padding: 12px 14px; margin: 22px 0;
+  text-decoration: none; color: var(--acme-fg); background: var(--acme-bg);
+}
+.acmebot-inline-link:hover { background: var(--acme-muted); }
+.acmebot-inline-link__tag {
+  font-family: var(--acme-font-mono);
+  font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--acme-highlight); font-weight: 600;
+}
+.acmebot-inline-link__title {
+  font-family: var(--acme-font-mono);
+  font-size: 14px; font-weight: 600;
+}
+.acmebot-inline-link__arrow {
+  font-family: var(--acme-font-mono); color: var(--acme-muted-fg);
+}
+
+/* Stats row */
+.acmebot-stats-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  margin: 24px 0; border: 1px solid var(--acme-border); border-radius: 10px;
+  overflow: hidden;
+}
+.acmebot-stats-row__stat {
+  padding: 14px 16px; border-right: 1px solid var(--acme-border);
+}
+.acmebot-stats-row__stat:last-child { border-right: 0; }
+.acmebot-stats-row__num {
+  font-family: var(--acme-font-display); font-size: 42px; font-weight: 700;
+  line-height: 1; color: var(--acme-fg);
+}
+.acmebot-stats-row__lbl {
+  font-family: var(--acme-font-mono);
+  font-size: 11px; color: var(--acme-muted-fg);
+  margin-top: 4px; text-transform: uppercase; letter-spacing: .08em;
+}
+
+/* FAQ */
+.acmebot-faq-section {
+  margin-top: 56px; border-top: 1px solid var(--acme-border); padding-top: 32px;
+}
+.acmebot-faq-section h2 {
+  font-family: var(--acme-font-hand-display);
+  font-size: 38px; margin: 0 0 18px;
+}
+.acmebot-faq {
+  border: 1px solid var(--acme-border); border-radius: 10px;
+  padding: 14px 18px; margin-bottom: 10px;
+}
+.acmebot-faq[open] { background: var(--acme-muted); }
+.acmebot-faq summary {
+  font-family: var(--acme-font-mono);
+  font-weight: 600; font-size: 14px; cursor: pointer; list-style: none;
+  display: flex; gap: 12px; align-items: center; justify-content: space-between;
+}
+.acmebot-faq summary::-webkit-details-marker { display: none; }
+.acmebot-faq summary::after {
+  content: "+";
+  font-family: var(--acme-font-display); font-size: 22px; font-weight: 700;
+  color: var(--acme-muted-fg);
+}
+.acmebot-faq[open] summary::after { content: "−"; }
+.acmebot-faq__ans {
+  font-family: var(--acme-font-mono);
+  font-size: 14px; color: var(--acme-muted-fg);
+  margin-top: 10px; line-height: 1.6;
+}
+
+/* Author bio */
+.acmebot-author-bio {
+  margin-top: 48px; border: 1px solid var(--acme-border); border-radius: 12px;
+  padding: 22px; display: grid; grid-template-columns: 80px 1fr; gap: 18px;
+}
+.acmebot-author-bio__ava {
+  width: 80px; height: 80px; border-radius: 12px;
+  border: 1px solid var(--acme-border); background: var(--acme-muted);
+  display: grid; place-items: center;
+  font-family: var(--acme-font-display); font-size: 32px; font-weight: 700;
+  color: #fff;
+}
+.acmebot-author-bio__name {
+  font-family: var(--acme-font-mono);
+  font-size: 16px; font-weight: 700;
+}
+.acmebot-author-bio__role {
+  font-family: var(--acme-font-mono);
+  font-size: 12px; color: var(--acme-muted-fg); margin-top: 2px;
+}
+.acmebot-author-bio__text {
+  font-family: var(--acme-font-mono);
+  font-size: 13px; color: var(--acme-muted-fg);
+  line-height: 1.6; margin: 8px 0 10px;
+}
+.acmebot-author-bio__links {
+  display: flex; gap: 12px;
+  font-family: var(--acme-font-mono); font-size: 12px;
+}
+.acmebot-author-bio__links a {
+  color: var(--acme-fg); text-decoration: underline; text-underline-offset: 3px;
+}
+.acmebot-author-bio__links a:hover { color: var(--acme-highlight); }
+
+/* Right rail — related cluster */
+.acmebot-post-aside {
+  position: sticky; top: 80px; align-self: start;
+  display: grid; gap: 22px;
+}
+.acmebot-related-cluster {
+  border: 1px solid var(--acme-border); border-radius: 12px; padding: 10px 12px;
+}
+.acmebot-related-cluster h4 {
+  font-family: var(--acme-font-mono); text-transform: uppercase; letter-spacing: .08em;
+  font-size: 11px; color: var(--acme-highlight); margin: 0 0 6px;
+}
+.acmebot-related-list { display: grid; gap: 0; }
+.acmebot-related-list a {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--acme-border);
+  text-decoration: none; color: var(--acme-fg);
+}
+.acmebot-related-list a:last-child { border-bottom: 0; padding-bottom: 0; }
+.acmebot-related-list a:hover .acmebot-related-list__title { color: var(--acme-highlight); }
+.acmebot-related-list__tag {
+  font-family: var(--acme-font-mono);
+  font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--acme-muted-fg); width: 100%;
+}
+.acmebot-related-list__title {
+  font-family: var(--acme-font-mono);
+  font-size: 13px; font-weight: 600; line-height: 1.3;
+  flex: 1 1 0%;
+}
+.acmebot-related-list__meta {
+  font-family: var(--acme-font-mono);
+  font-size: 11px; color: var(--acme-muted-fg);
+  white-space: nowrap;
+}
+
+/* Read next */
+.acmebot-read-next {
+  margin-top: 64px; padding-top: 32px;
+  border-top: 1px solid var(--acme-border);
+}
+.acmebot-read-next h2 {
+  font-family: var(--acme-font-hand-display);
+  font-size: 36px; margin: 0 0 18px;
+}
+.acmebot-read-next-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+}
+.acmebot-read-next-grid .acmebot-card { border-top: 0; padding-top: 0; }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 1080px) {
+  /* Collapse the 3-col tunnel — sidebars stack below content. The
+     .acmebot-aligned wrapper and the hero (which mirror that grid) collapse
+     too so they don't leave the content stranded in column 2 of a now
+     1-column layout. Bugfix 07052026 */
+  .acmebot-home-body,
+  .acmebot-aligned,
+  .acmebot-hero {
+    grid-template-columns: 1fr;
+    padding-left: 20px; padding-right: 20px;
+  }
+  .acmebot-aligned > * { grid-column: 1; }
+  .acmebot-hero > div:first-child,
+  .acmebot-hero > .acmebot-hero__art { grid-column: 1; }
+  .acmebot-pillar-nav, .acmebot-sidebar { position: static; }
+  .acmebot-footer-bot,
+  .acmebot-site-footer__inner { padding-left: 20px; padding-right: 20px; }
+  .acmebot-post-shell,
+  .acmebot-post-shell.layout-three,
+  .acmebot-post-shell.layout-two {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 32px;
+  }
+  .acmebot-post-shell .acmebot-toc-rail { display: none; }
+}
+@media (max-width: 820px) {
+  .acmebot-hero__art { display: none; }
+  .acmebot-post-grid { grid-template-columns: 1fr; }
+  .acmebot-clusters-grid { grid-template-columns: 1fr; }
+  .acmebot-site-footer__inner { grid-template-columns: 1fr 1fr; }
+  :root { --acme-content-w: 100%; }
+  .acmebot-post-shell,
+  .acmebot-post-shell.layout-two,
+  .acmebot-post-shell.layout-three {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 12px 16px 60px;
+  }
+  .acmebot-post-shell .acmebot-post-aside { display: none; }
+  .acmebot-read-next-grid { grid-template-columns: 1fr; }
+  .acmebot-author-bio { grid-template-columns: 1fr; }
+  /* Mobile header: nav + search are hidden at this breakpoint, so the
+     remaining theme toggle + CTA fit alongside the brand on a single row.
+     Don't force tools onto a new line. Bugfix 07052026 */
+  .acmebot-site-header__inner { padding: 8px 16px; }
+  .acmebot-search-box { min-width: 0; flex: 1 1 auto; }
+  .acmebot-crumbs { padding: 8px 16px; font-size: 11px; gap: 4px; }
+  .acmebot-post-hero { padding: 0 0 14px; }
+  .acmebot-post-pillar-callout { padding: 4px 8px; margin-bottom: 10px; }
+  .acmebot-post-title { margin-bottom: 8px; }
+  .acmebot-post-deck { font-size: 15px; margin-bottom: 14px; }
+  .acmebot-post-meta { padding: 10px 0; margin-bottom: 16px; }
+}
+@media (max-width: 600px) {
+  .acmebot-post-title { font-size: 32px; line-height: 1.1; }
+  .acmebot-article-body h2,
+  .acmebot-article-body .acme-h2-wrap > h2 { font-size: 32px; }
+  .acmebot-stats-row { grid-template-columns: 1fr; }
+  .acmebot-stats-row__stat { border-right: 0; border-bottom: 1px solid var(--acme-border); }
+  .acmebot-stats-row__stat:last-child { border-bottom: 0; }
+  .acmebot-site-footer__inner { grid-template-columns: 1fr; }
+  /* Hero text already tightened; on phones drop title another notch. */
+  .acmebot-hero__title { font-size: 20px; }
+}

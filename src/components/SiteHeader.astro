@@ -1,0 +1,20 @@
+---
+// Markup comes from the chrome synced from WordPress (§5.3). The one addition
+// is the nav: the blog header is brand + CTA only, and research needs text
+// links to both sections. It is injected here rather than in src/generated/,
+// which sync-chrome.mjs overwrites on every build and CI drift-checks.
+import chrome from "../generated/chrome.json"
+import { path } from "../lib/site"
+
+const nav =
+  `<nav class="acmebot-header-nav" aria-label="Sections">` +
+  `<a href="${path()}" aria-current="page">Research</a>` +
+  `<a href="/blog/">Blog</a>` +
+  `</nav>`
+
+const TOOLS = '<div class="acmebot-header-tools">'
+const header = chrome.header_html.includes(TOOLS)
+  ? chrome.header_html.replace(TOOLS, nav + TOOLS)
+  : chrome.header_html.replace("</div></header>", `${nav}</div></header>`)
+---
+<Fragment set:html={header} />

@@ -1,0 +1,9 @@
+---
+// Methodology callout — one restrained variant.
+interface Props { label?: string }
+const { label = "Methodology" } = Astro.props
+---
+<aside class="callout" role="note">
+  <p class="eyebrow">{label}</p>
+  <slot />
+</aside>
