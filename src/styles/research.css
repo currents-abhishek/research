@@ -76,11 +76,17 @@ a:hover { text-decoration: underline; }
 }
 
 /* ── Column ───────────────────────────────────────────────── */
+/* One knob per measure. JetBrains Mono's advance is 0.6em, so at the 16px
+   body size 76ch ≈ 730px and 88ch ≈ 845px. */
+:root {
+  --measure: 76ch;
+  --measure-wide: 88ch;
+}
 .column {
-  width: min(100% - 2.5rem, 68ch);
+  width: min(100% - 2.5rem, var(--measure));
   margin-inline: auto;
 }
-.column--wide { width: min(100% - 2.5rem, 80ch); }
+.column--wide { width: min(100% - 2.5rem, var(--measure-wide)); }
 
 /* ── Shared type roles ────────────────────────────────────── */
 .eyebrow {
@@ -247,7 +253,7 @@ a:hover { text-decoration: underline; }
   overscroll-behavior-x: contain;
 }
 /* Wide tables (5+ columns, tagged by scripts/rehype-table-wrap.mjs) break out of
-   the 68ch measure and run end-to-end. 100cqw is main's content box, so it
+   the --measure column and run end-to-end. 100cqw is main's content box, so it
    excludes the stable scrollbar gutter that 100vw would double-count.
    margin-inline percentages resolve against the column, so 50% - width/2 recentres. */
 .table-wrap--bleed,
