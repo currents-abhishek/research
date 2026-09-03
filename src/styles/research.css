@@ -45,15 +45,25 @@ main { flex: 1; container-type: inline-size; }
 .acmebot-header-nav a { color: var(--muted-foreground); text-decoration: none; }
 .acmebot-header-nav a:hover { color: var(--foreground); }
 .acmebot-header-nav a[aria-current="page"] { color: var(--highlight); }
-/* Brand + nav + CTA do not fit on one narrow row, so the nav wraps to its own
-   centred line underneath rather than pushing the CTA off-screen. */
+/* Narrow screens: keep brand + nav + CTA on one row (down to 320px) by taking
+   the nav out of absolute centring and into the flex flow, and tightening
+   nav type, logo height, CTA padding and the row's own padding/gap. */
 @media (max-width: 700px) {
-  .acmebot-site-header__inner { flex-wrap: wrap; row-gap: 2px; }
+  .acmebot-site-header__inner { gap: 10px; padding-left: 12px; padding-right: 12px; }
   .acmebot-header-nav {
     position: static; transform: none;
-    order: 3; flex: 0 0 100%; justify-content: center;
-    gap: 20px; font-size: 13px; letter-spacing: 0.06em; padding-bottom: 4px;
+    flex: 1 1 auto; justify-content: center;
+    gap: 12px; font-size: 11px; letter-spacing: 0.04em; white-space: nowrap;
   }
+  .acmebot-brand__logo { height: 20px; }
+  .acmebot-site-header .acmebot-btn-cta { font-size: 11px; padding: 6px 10px; white-space: nowrap; }
+}
+/* Below 360px the row is a few pixels over even so; trim once more. */
+@media (max-width: 360px) {
+  .acmebot-site-header__inner { gap: 8px; padding-left: 10px; padding-right: 10px; }
+  .acmebot-header-nav { gap: 10px; font-size: 10px; }
+  .acmebot-brand__logo { height: 18px; }
+  .acmebot-site-header .acmebot-btn-cta { font-size: 10px; padding: 6px 8px; }
 }
 
 /* The synced header/footer use 100vw + negative margins to break out of
