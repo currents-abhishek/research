@@ -7,7 +7,7 @@ import "../generated/chrome.css"
 import "../styles/tokens.css"
 import "../styles/research.css"
 import { absolute, path } from "../lib/site"
-import { GA_ID, ADS_ID, gtagInline, opInline } from "../lib/analytics"
+import { GA_ID, ADS_ID, gtagInline, opInline, analyticsLoader } from "../lib/analytics"
 
 interface Props {
   title: string
@@ -56,11 +56,13 @@ const {
 
     {jsonLd.map((obj) => <script type="application/ld+json" set:html={JSON.stringify(obj)} />)}
 
-    {/* Analytics — GA4 + Google Ads + OpenPanel, identical to /blog (see lib/analytics.ts). */}
-    <script is:inline defer src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+    {/* Analytics — GA4 + Google Ads + OpenPanel, same IDs as /blog (see lib/analytics.ts).
+        The gtag/op queues are set up inline so nothing is dropped; the loader
+        scripts themselves are injected on the first interaction or, failing
+        that, once the page is idle after load — see analyticsLoader(). */}
     <script is:inline set:html={gtagInline(GA_ID, ADS_ID)} />
     <script is:inline set:html={opInline()} />
-    <script is:inline defer src="https://openpanel.dev/op1.js"></script>
+    <script is:inline set:html={analyticsLoader(GA_ID)} />
     <slot name="head" />
   </head>
   <body>

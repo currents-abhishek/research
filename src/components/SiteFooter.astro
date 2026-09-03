@@ -1,4 +1,18 @@
 ---
+// Markup comes from the chrome synced from WordPress (§5.3). Two accessibility
+// touch-ups are applied at render time rather than in src/generated/ (which
+// sync-chrome.mjs overwrites and CI drift-checks):
+//  - the column headings ship as <h5>, which skips levels after the article's
+//    h2/h3 (Lighthouse "heading-order"); they become <h2> with the same look
+//    (see .acmebot-footer-heading in research.css).
+//  - the logo <img> gets intrinsic width/height so it has an aspect ratio
+//    before it loads (Lighthouse "unsized-images"); CSS still sets the height.
 import chrome from "../generated/chrome.json"
+import { LOGO_SIZE } from "../lib/site"
+
+const footer = chrome.footer_html
+  .replaceAll("<h5>", '<h2 class="acmebot-footer-heading">')
+  .replaceAll("</h5>", "</h2>")
+  .replace('class="acmebot-footer-brand__logo"', `class="acmebot-footer-brand__logo" ${LOGO_SIZE}`)
 ---
-<Fragment set:html={chrome.footer_html} />
+<Fragment set:html={footer} />

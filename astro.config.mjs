@@ -15,7 +15,10 @@ export default defineConfig({
   base: "/research",
   output: "static",
   trailingSlash: "always",
-  build: { format: "directory" },
+  // Both stylesheets together are ~10 KiB gzipped; inlining them removes two
+  // render-blocking requests from the critical path (first paint on a
+  // throttled mobile connection is dominated by round trips, not bytes).
+  build: { format: "directory", inlineStylesheets: "always" },
   integrations: [
     mdx(),
     sitemap({

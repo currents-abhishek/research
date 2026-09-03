@@ -4,7 +4,7 @@
 // links to both sections. It is injected here rather than in src/generated/,
 // which sync-chrome.mjs overwrites on every build and CI drift-checks.
 import chrome from "../generated/chrome.json"
-import { path } from "../lib/site"
+import { LOGO_SIZE, path } from "../lib/site"
 
 const nav =
   `<nav class="acmebot-header-nav" aria-label="Sections">` +
@@ -13,8 +13,10 @@ const nav =
   `</nav>`
 
 const TOOLS = '<div class="acmebot-header-tools">'
-const header = chrome.header_html.includes(TOOLS)
+const withNav = chrome.header_html.includes(TOOLS)
   ? chrome.header_html.replace(TOOLS, nav + TOOLS)
   : chrome.header_html.replace("</div></header>", `${nav}</div></header>`)
+// Intrinsic size so the logo has an aspect ratio before it loads; CSS sets the height.
+const header = withNav.replace('class="acmebot-brand__logo"', `class="acmebot-brand__logo" ${LOGO_SIZE}`)
 ---
 <Fragment set:html={header} />

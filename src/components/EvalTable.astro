@@ -5,6 +5,9 @@
 // palette is the research one, and rows are server-rendered rather than built
 // from a JSON blob at runtime.
 import data from "../data/answer-quality-eval.json"
+import { path } from "../lib/site"
+// Raw answer text is fetched on demand from this endpoint (see src/pages/data/).
+const ANSWERS_URL = path("data/answer-quality-eval-answers.json")
 
 const ENGINES = ["chatgpt", "ai_overview", "ai_mode"] as const
 const LABEL: Record<string, string> = {
@@ -24,7 +27,7 @@ const { queries, means, firsts } = data as {
 const short = (s: string) => (s.length > 110 ? s.slice(0, 110) + "…" : s)
 ---
 
-<div class="eval bleed">
+<div class="eval bleed" data-answers={ANSWERS_URL}>
   <div class="cards">
     {ENGINES.map((e) => (
       <div class="card">
@@ -43,7 +46,7 @@ const short = (s: string) => (s.length > 110 ? s.slice(0, 110) + "…" : s)
   <table>
     <thead>
       <tr>
-        <th style="width:22px"></th>
+        <th style="width:22px"><span class="sr-only">Expand</span></th>
         <th>Query</th>
         <th class="hidesm" style="width:120px">Winner</th>
         <th style="width:290px">Why it won</th>
@@ -97,7 +100,7 @@ const short = (s: string) => (s.length > 110 ? s.slice(0, 110) + "…" : s)
                         <div class="meta">
                           Cited: {a.publishers.length ? a.publishers.join(", ") : "none"}
                         </div>
-                        <pre>{a.text}</pre>
+                        <pre data-answer={`${q.id}:${a.engine}`}>Loading…</pre>
                       </div>
                     </div>
                   ))}
@@ -114,7 +117,25 @@ const short = (s: string) => (s.length > 110 ? s.slice(0, 110) + "…" : s)
 <script>
   // Row click toggles its detail row; the raw-output button toggles inside it
   // without collapsing the row.
-  for (const table of document.querySelectorAll<HTMLElement>(".eval table")) {
+  for (const eval_ of document.querySelectorAll<HTMLElement>(".eval")) {
+    const table = eval_.querySelector<HTMLElement>("table")!
+    // The raw answers (~360 KB of text) live in a sidecar JSON file and are
+    // fetched once, on the first "Show raw model output" click, then written
+    // into the <pre> placeholders. The counts/citations beside each engine are
+    // server-rendered, so the panel reads correctly while loading.
+    let answers: Promise<void> | undefined
+    const loadAnswers = () =>
+      (answers ??= fetch(eval_.dataset.answers!)
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+        .then((map: Record<string, string>) => {
+          for (const pre of eval_.querySelectorAll<HTMLElement>("pre[data-answer]"))
+            pre.textContent = map[pre.dataset.answer!] ?? "(no capture)"
+        })
+        .catch(() => {
+          answers = undefined // allow a retry on the next click
+          for (const pre of eval_.querySelectorAll<HTMLElement>("pre[data-answer]"))
+            pre.textContent = "Could not load the raw output. Check your connection and try again."
+        }))
     table.addEventListener("click", (ev) => {
       const target = ev.target as HTMLElement
       const abtn = target.closest<HTMLButtonElement>(".ansbtn")
@@ -128,6 +149,7 @@ const short = (s: string) => (s.length > 110 ? s.slice(0, 110) + "…" : s)
       }
       const btn = target.closest<HTMLButtonElement>(".rawbtn")
       if (btn) {
+        loadAnswers()
         const raws = btn.parentElement!.querySelector<HTMLElement>(".raws")!
         const on = raws.hidden
         raws.hidden = !on

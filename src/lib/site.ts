@@ -19,6 +19,10 @@ export const path = (p = "") => {
 /** Absolute URL under the base. */
 export const absolute = (p = "") => `${SITE}${path(p)}`
 
+// Intrinsic size of https://acme.bot/logo/logo-small-wide.svg (viewBox 59.69 × 10.96mm,
+// scaled ×20). Only the aspect ratio matters: the chrome CSS sets the rendered height.
+export const LOGO_SIZE = 'width="1194" height="219"'
+
 export type Research = CollectionEntry<"research">
 
 export async function publishedResearch(): Promise<Research[]> {

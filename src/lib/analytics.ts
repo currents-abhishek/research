@@ -20,3 +20,15 @@ export const gtagInline = (ga: string, ads: string) =>
 
 export const opInline = () =>
   `window.op=window.op||function(){(window.op.q=window.op.q||[]).push(arguments)};op("init",${JSON.stringify(OPENPANEL)});`
+
+// Injects the two loader scripts on the first user interaction (pointer, key,
+// touch, scroll, mouse move), or 8 s after `load` for a visitor who never
+// interacts. Keeps ~350 KB of third-party JS and its long tasks off the
+// critical path; the inline queues above buffer any events fired before the
+// loaders arrive. Trade-off, agreed 2026-09-03: a visitor who leaves within
+// a few seconds without touching the page is not counted.
+export const analyticsLoader = (ga: string) =>
+  `(function(){var d=document,done=false;function go(){if(done)return;done=true;` +
+  `["https://www.googletagmanager.com/gtag/js?id=${ga}","https://openpanel.dev/op1.js"].forEach(function(u){var s=d.createElement("script");s.src=u;s.async=true;d.head.appendChild(s)})}` +
+  `["pointerdown","keydown","touchstart","scroll","mousemove"].forEach(function(e){addEventListener(e,go,{once:true,passive:true})});` +
+  `addEventListener("load",function(){setTimeout(go,8000)})})();`

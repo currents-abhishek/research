@@ -65,6 +65,13 @@ main { flex: 1; container-type: inline-size; }
   margin-right: 0 !important;
 }
 .acmebot-site-footer { margin-top: 96px; }
+/* Footer column headings are re-levelled h5 → h2 by SiteFooter.astro; this
+   mirrors the plugin's `.acmebot-site-footer h5` rule so they look identical. */
+.acmebot-site-footer .acmebot-footer-heading {
+  font-family: var(--acme-font-mono);
+  text-transform: uppercase; letter-spacing: .08em;
+  font-size: 11px; font-weight: bold; color: var(--acme-highlight); margin: 0 0 10px;
+}
 
 a { color: var(--highlight); text-decoration: none; text-underline-offset: 0.2em; }
 a:hover { text-decoration: underline; }
@@ -121,16 +128,17 @@ a:hover { text-decoration: underline; }
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.1;
+  text-wrap: balance;
   margin: 0 0 1rem;
 }
-.listing-head p { margin: 0; color: var(--research-prose); max-width: 56ch; }
+.listing-head p { margin: 0; color: var(--research-prose); font-weight: var(--weight-prose); max-width: 56ch; text-wrap: pretty; }
 .listing-head .accent-rule { width: 2.5rem; height: 2px; background: var(--highlight); margin: 1.5rem 0 0; }
 .listing { list-style: none; margin: 0; padding: 0; }
 .listing li { padding: 2rem 0; border-bottom: 1px solid var(--border); }
-.listing h2 { font-size: var(--doc-h3); font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; margin: 0 0 0.5rem; }
+.listing h2 { font-size: var(--doc-h3); font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; margin: 0 0 0.5rem; text-wrap: balance; }
 .listing h2 a { color: var(--foreground); }
 .listing h2 a:hover { color: var(--highlight); text-decoration: none; }
-.listing .deck { margin: 0 0 0.75rem; color: var(--research-prose); }
+.listing .deck { margin: 0 0 0.75rem; color: var(--research-prose); font-weight: var(--weight-prose); letter-spacing: -0.01em; text-wrap: pretty; }
 .listing-empty { padding: 3rem 0; color: var(--muted-foreground); }
 .listing-foot { padding: 2rem 0 0; }
 
@@ -139,16 +147,25 @@ a:hover { text-decoration: underline; }
 .article-head h1 {
   font-size: var(--doc-h1);
   font-weight: 600;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
+  /* Display type wants tighter leading than body copy, not the same: at 36px
+     a 1.2 leading opens ~43px between baselines and a three-line headline
+     reads as three separate lines rather than one sentence. Matches the
+     listing h1. Tracking pulls in harder than the body for the same reason —
+     JetBrains Mono's fixed advance shows up most at display sizes. */
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  text-wrap: balance;
   margin: 0 0 1rem;
   color: var(--foreground);
 }
 .article-head .deck {
   font-size: var(--doc-h4);
+  font-weight: var(--weight-prose);
   line-height: 1.5;
+  letter-spacing: -0.01em;
   color: var(--research-prose);
   margin: 0 0 1.25rem;
+  text-wrap: pretty;
 }
 .article-hero { margin: 0 0 2.5rem; }
 .article-hero img { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--border); }
@@ -156,13 +173,42 @@ a:hover { text-decoration: underline; }
 
 
 /* ── Prose (document scale, §4.3) ─────────────────────────── */
-.prose { color: var(--research-prose); font-size: var(--doc-body); line-height: 1.7; }
+.prose {
+  color: var(--research-prose);
+  font-size: var(--doc-body);
+  font-weight: var(--weight-prose);
+  line-height: 1.62;
+  /* JetBrains Mono sets wide by design (it is a code face). A hair of negative
+     tracking closes the words up into shapes at running-text sizes. */
+  letter-spacing: -0.01em;
+  /* Even out the rag and keep single-word last lines off the ends of
+     paragraphs. Ignored where unsupported. */
+  text-wrap: pretty;
+}
 .prose > * { margin-top: 0; margin-bottom: 1.35em; }
+/* Paragraph rhythm: tighter inside, looser between.
+   The gap after a paragraph has to beat that paragraph's own line spacing,
+   or the block has no edges and the reader cannot tell where one thought
+   ends. It was 1.35em against a 1.7 leading — the wrong way round. Now
+   1.62 inside, 2.4em between, so each paragraph reads as one object with a
+   rest point after it. The gap is deliberately wide: it is also what gives
+   the eye somewhere to land on the return sweep at the 82ch measure. */
+.prose p { margin-bottom: 2.4em; }
+/* Except where the paragraph is a lead-in: a list, table, figure or quote
+   it introduces belongs to it and stays close. */
+.prose p:has(+ ul),
+.prose p:has(+ ol),
+.prose p:has(+ pre),
+.prose p:has(+ figure),
+.prose p:has(+ blockquote),
+.prose p:has(+ .callout),
+.prose p:has(+ .table-wrap) { margin-bottom: 1.2em; }
 .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
   color: var(--foreground);
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.25;
+  text-wrap: balance;
   margin-top: 2.4em;
   margin-bottom: 0.7em;
   scroll-margin-top: 5rem;
@@ -208,7 +254,7 @@ a:hover { text-decoration: underline; }
 .prose h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
 .prose strong { color: var(--foreground); font-weight: 600; }
 .prose ul, .prose ol { padding-left: 1.5rem; }
-.prose li { margin: 0.35em 0; }
+.prose li { margin: 0.5em 0; }
 .prose li::marker { color: var(--muted-foreground); }
 .prose hr { border: 0; border-top: 1px solid var(--border); margin: 3em 0; }
 .prose img { max-width: 100%; height: auto; }
@@ -217,12 +263,16 @@ a:hover { text-decoration: underline; }
 .prose code {
   font-family: var(--font-mono);
   font-size: 0.92em;
+  font-weight: 400;
+  letter-spacing: 0;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 3px;
   padding: 0.05em 0.35em;
 }
 .prose pre {
+  font-weight: 400;
+  letter-spacing: 0;
   background: var(--card) !important;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -356,8 +406,8 @@ a:hover { text-decoration: underline; }
 
 /* 404 */
 .notfound { padding: 6rem 0 4rem; }
-.notfound h1 { font-size: var(--display-h1); font-weight: 600; letter-spacing: -0.025em; margin: 0 0 1rem; }
-.notfound p { color: var(--research-prose); }
+.notfound h1 { font-size: var(--display-h1); font-weight: 600; letter-spacing: -0.025em; margin: 0 0 1rem; text-wrap: balance; }
+.notfound p { color: var(--research-prose); font-weight: var(--weight-prose); }
 .notfound .eyebrow { color: var(--highlight); }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

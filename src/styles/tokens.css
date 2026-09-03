@@ -11,13 +11,25 @@
   --border: #43474d;
   --input: #43474d;
   --ring: #d4d4d8;              /* zinc-300 */
-  --highlight: #249fbd;         /* brand cyan — links, one accent rule, active nav. Nothing else. */
+  /* Brand cyan is #249fbd, which is 4.15:1 on --background — under the 4.5:1
+     WCAG AA floor for small text (nav, footer headings, meta links). Lifted
+     two steps to the nearest value that clears it (4.66:1). Links, one accent
+     rule, active nav. Nothing else. */
+  --highlight: #28a9c8;
   --radius: 0.5rem;
   --grid-line: rgba(255, 255, 255, 0.05);
 
-  /* Research-only: long-form body copy. zinc-300, softer than --foreground
-     across a 3,000-word article. Headings stay --foreground. */
-  --research-prose: #d4d4d8;
+  /* Research-only: long-form body copy, softer than --foreground across a
+     3,000-word article. Headings stay --foreground.
+     Backed off zinc-300 (#d4d4d8) at the top of the ramp: near-full contrast
+     on a dark surface makes mono halate, which is what tires the eye over an
+     article's length. Still ~9:1 on --background, well clear of AA. */
+  --research-prose: #c8cace;
+
+  /* Long-form body weight. The variable face carries 100-800 and the rest of
+     the site only ever used 400/600; 350 is the same letterform with less
+     bloom on a dark background. Headings and <strong> stay 600. */
+  --weight-prose: 350;
 
   /* Type — the whole of acme.bot is JetBrains Mono (common/src/styles/tokens.css). */
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
