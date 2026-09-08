@@ -2,20 +2,26 @@
 import BaseLayout from "../layouts/BaseLayout.astro"
 import ArticleMeta from "../components/ArticleMeta.astro"
 import { absolute, path, publishedResearch, readingTime } from "../lib/site"
+import { graph, organization, person, ORGANIZATION_ID } from "../lib/entity"
 
 const posts = await publishedResearch()
 const title = "Research — ACME.BOT"
 const description =
   "Original data studies from ACME.BOT on how answer engines and search actually rank, cite, and surface content."
 const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: "ACME.BOT Research",
-    description,
-    url: absolute(),
-    isPartOf: { "@type": "WebSite", name: "ACME.BOT", url: "https://acme.bot" },
-  },
+  graph(
+    person,
+    organization,
+    {
+      "@type": "CollectionPage",
+      "@id": `${absolute()}#collection`,
+      name: "ACME.BOT Research",
+      description,
+      url: absolute(),
+      isPartOf: { "@type": "WebSite", "@id": "https://acme.bot/blog/#website", name: "ACME.BOT", url: "https://acme.bot" },
+      publisher: { "@id": ORGANIZATION_ID },
+    }
+  ),
 ]
 // Pagination deliberately absent: revisit past ~30 articles (§7).
 ---

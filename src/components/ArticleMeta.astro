@@ -1,15 +1,24 @@
 ---
 import { fmtDate, isoDate } from "../lib/site"
 import { topic } from "../lib/topics"
+import { LINKEDIN, PERSON_NAME } from "../lib/entity"
 interface Props {
   publishDate: Date
   updatedDate?: Date
   readingTime: number
   topics?: string[]
+  /** Article pages only. The listing repeats one name down the page, which is
+   *  noise; the byline is on the article the schema attributes. */
+  byline?: boolean
 }
-const { publishDate, updatedDate, readingTime, topics = [] } = Astro.props
+const { publishDate, updatedDate, readingTime, topics = [], byline = false } = Astro.props
 ---
 <p class="meta">
+  {/* The Article's schema names an author, so the page has to as well: markup
+      the visible text does not support is discounted. */}
+  {byline && (
+    <span>By <a class="byline" href={LINKEDIN} rel="author">{PERSON_NAME}</a></span>
+  )}
   <time datetime={isoDate(publishDate)}>{fmtDate(publishDate)}</time>
   {updatedDate && <span>Updated <time datetime={isoDate(updatedDate)}>{fmtDate(updatedDate)}</time></span>}
   <span>{readingTime} min read</span>

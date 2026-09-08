@@ -127,6 +127,8 @@ a:hover { text-decoration: underline; }
   margin: 0;
 }
 .meta > * + *::before { content: "·"; margin-right: 0.75rem; opacity: 0.6; }
+.byline { color: var(--muted-foreground); text-decoration: underline; text-decoration-color: var(--border); text-underline-offset: 0.2em; }
+.byline:hover { color: var(--highlight); text-decoration-color: currentColor; }
 .topics { display: inline-flex; flex-wrap: wrap; gap: 0.25rem 0.9rem; }
 .topic { color: var(--muted-foreground); text-decoration: underline; text-decoration-color: var(--border); text-underline-offset: 0.2em; }
 .topic:hover { color: var(--highlight); text-decoration-color: currentColor; }
