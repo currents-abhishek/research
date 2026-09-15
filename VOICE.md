@@ -2,7 +2,7 @@
 
 How Abhishek edits a research article. Each entry is a real edit, the before and after, and the reason. Read this before drafting or revising anything under `src/content/research/`.
 
-Source of the examples below: the 2026-09-15 edit pass on `ai-answers-cite-old-pages-kept-fresh.mdx`.
+Source of the examples below: the 2026-09-15 edit pass on `ai_answers_citation_freshness_study.mdx`.
 
 ## Page shape
 
