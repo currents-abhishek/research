@@ -47,12 +47,12 @@ The first screen is, in order: **h1 → subtext → "what this means for us" →
 ## The "what this means for us" line
 
 - **Directly under the subtext, a bold-led paragraph that turns the finding into what we do next.**
-  - After: "**What this means for us:** only 35% of cited pages are under a year old. Refreshing the pages we already have beats publishing new ones — keeping content updated can be important to maintain citations."
+  - After: "**What this means for us:** only 35% of cited pages are under a year old. Refreshing the pages we already have beats publishing new ones — keeping content updated can be important to get cited."
   - Why: research on this site exists to change what we do. State the action next to the finding, before the reader scrolls. "For us" is honest: it is our read, not advice to the world.
 - **The takeaway is hedged like the finding, not an order.**
   - Before: "…put a real edit date on every page and keep it moving."
-  - After: "…keeping content updated can be important to maintain citations."
-  - Why: an imperative ("put a date on every page") claims we know the mechanism. "Can be important to maintain citations" says what the data supports and names the thing at stake, the citation, rather than a tactic.
+  - After: "…keeping content updated can be important to get cited."
+  - Why: an imperative ("put a date on every page") claims we know the mechanism. "Can be important to get cited" says what the data supports and names the thing at stake, the citation, rather than a tactic.
 
 ## What stays in Takeaways
 
@@ -63,7 +63,7 @@ The first screen is, in order: **h1 → subtext → "what this means for us" →
 
 - **A section whose point is already in the takeaway line is cut.**
   - Before: a Takeaways section "Most cited pages don't state a date — say yours" (28% carry a usable date, 45% of readable articles declare one, "put a declared dateModified on the page").
-  - After: section removed. The action already sits under the subtext ("keeping content updated can be important to maintain citations"); the coverage numbers remain in Method and the Appendix.
+  - After: section removed. The action already sits under the subtext ("keeping content updated can be important to get cited"); the coverage numbers remain in Method and the Appendix.
   - Why: once the top of the page says what to do, a section that re-derives the same instruction is repetition, not a finding.
 
 ## Section headings and tables
