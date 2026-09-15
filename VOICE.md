@@ -84,6 +84,11 @@ The first screen is, in order: **h1 → subtext → "what this means for us" →
 
 ## Claims
 
+- **When a category is excluded, name its members and count them.**
+  - Before: "198 platform pages never state dates"
+  - After: "198 platform pages never state dates: Google's own search, Shopping and Maps links (101), YouTube (34), Reddit (31), Instagram (9), Facebook (7), plus a handful of app-store and LinkedIn links"
+  - Why: "platform pages" is our label. The reader should be able to see what was left out and judge whether it matters.
+
 - **Link findings across studies with "related to", not "explains".**
   - Before: "It also explains a finding from the answer-quality study: most factual errors in AI answers were staleness, not invention."
   - After: "This is related to a finding from the answer-quality study: …"
