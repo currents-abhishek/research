@@ -384,6 +384,12 @@ a:hover { text-decoration: underline; }
 .callout > :last-child { margin-bottom: 0; }
 .callout p { margin: 0 0 0.75em; }
 
+/* Stat tiles */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.75rem; margin: 2em 0; }
+.stat { padding: 0.9rem 1.1rem; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); }
+.stat-value { font-size: var(--doc-h1); font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; color: var(--foreground); }
+.stat-label { margin-top: 0.3rem; font-size: 0.85em; color: var(--muted-foreground); }
+
 /* Figures */
 .figure { margin: 2em 0; }
 .figure img, .figure svg {
@@ -391,6 +397,17 @@ a:hover { text-decoration: underline; }
   border: 1px solid var(--border); border-radius: var(--radius); background: var(--card);
 }
 .figure figcaption { margin-top: 0.6rem; }
+/* Wide figure: ~80% of the viewport on desktop, centred on the column like .bleed.
+   Never narrower than the column; on narrow viewports it is just the column. */
+.figure--wide {
+  --bleed: max(100%, min(80cqw, 1400px));
+  width: var(--bleed);
+  margin-inline: calc(50% - var(--bleed) / 2);
+}
+/* The caption sits back on the text column. --measure is in ch, which would shrink
+   with the caption's smaller font, so it is restated in rem: 82ch × 0.6em at 16px. */
+.figure--wide figcaption { width: min(100%, 49.2rem); margin-inline: auto; }
+@supports not (width: 100cqw) { .figure--wide { --bleed: 100%; } }
 .figure figcaption .fig-label { color: var(--foreground); font-weight: 600; margin-right: 0.4rem; }
 
 /* Footnotes (remark-gfm) */

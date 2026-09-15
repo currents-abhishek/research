@@ -1,0 +1,14 @@
+---
+// <Stats items={[{ value: "1.9 yrs", label: "typical age of a cited page" }, ...]} />
+// A row of stat tiles: one big number, one plain-words label. Two to three per row.
+interface Props { items: { value: string; label: string }[] }
+const { items } = Astro.props
+---
+<div class="stats" role="list">
+  {items.map((it) => (
+    <div class="stat" role="listitem">
+      <div class="stat-value">{it.value}</div>
+      <div class="stat-label">{it.label}</div>
+    </div>
+  ))}
+</div>

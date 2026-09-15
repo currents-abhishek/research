@@ -8,7 +8,10 @@ const research = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./src/content/research" }),
   schema: z.object({
     title: z.string(),
-    description: z.string().max(200, "Meta description / deck — keep to ~160 chars"),
+    description: z.string().max(200, "Meta description — keep to ~160 chars"),
+    // On-page subtext under the h1. Longer than the meta description: the
+    // premise plus the takeaway in plain terms. Falls back to description.
+    deck: z.string().optional(),
     publishDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     // WordPress category slugs (see lib/topics.ts). Validated against the

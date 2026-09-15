@@ -6,6 +6,7 @@ import Figure from "../components/Figure.astro"
 import Callout from "../components/Callout.astro"
 import Cite from "../components/Cite.astro"
 import EvalTable from "../components/EvalTable.astro"
+import Stats from "../components/Stats.astro"
 
 export async function getStaticPaths() {
   const posts = await publishedResearch()
@@ -15,5 +16,5 @@ const { entry } = Astro.props
 const { Content } = await render(entry)
 ---
 <ArticleLayout {entry}>
-  <Content components={{ Figure, Callout, Cite, EvalTable }} />
+  <Content components={{ Figure, Callout, Cite, EvalTable, Stats }} />
 </ArticleLayout>

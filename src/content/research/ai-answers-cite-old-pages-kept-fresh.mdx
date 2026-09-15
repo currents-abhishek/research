@@ -1,0 +1,221 @@
+---
+title: "Answer engines prefer to cite old pages that have been regularly updated"
+description: "A pilot study of 356 pages cited by ChatGPT, Google AI Mode and AI Overview. The typical cited page is two years old; seven in ten were edited in the last year."
+deck: "A pilot study of 356 cited pages among 59 prompt queries shows a clear preference of answer engines like ChatGPT, Google AI Mode and Google AI Overviews towards regularly updated pages. The typical cited page is two years old. Seven in ten were edited in the last year. Only four in ten were written in the last year."
+publishDate: 2026-09-12
+topics: [answer-engine-optimization]
+---
+
+**What this means for us:** only 35% of cited pages are under a year old.
+Refreshing the pages we already have beats publishing new ones — keeping
+content updated can be important to maintain citations.
+
+<Figure src="/images/cited-page-dates.svg" alt="Paired histogram of 356 pages cited by AI answers on 2026-09-11, binned by half-year. Blue bars, the year each page was first published, spread from before 2020 through 2026 with 64 pages older than 2020. Orange bars, the year each page was last edited, are near zero before 2024 and rise steeply to 93 in the first half of 2026 and 123 in the second half." label="Figure 1" caption="Each of the 356 cited pages have two dates in this graph. Blue is when a page was first published; orange is when it was last updated. Blue is spread out: pages of every age get cited, old ones included. Orange is bunched at the right: most cited pages were updated recently." wide />
+
+<Stats items={[
+  { value: "1.9 yrs", label: "typical age of a cited page (half are older)" },
+  { value: "69%", label: "were edited in the last 12 months" },
+]} />
+
+## Summary
+
+- Answer engines seem to be biased to cite old pages that have been recently
+  updated instead of fresh new pages.
+- The typical cited page is <mark>two years</mark> old. Half were published
+  more than two years ago; one in six before 2020.
+- <mark>Seven in ten</mark> were edited in the last year. Only four in ten
+  were *written* in the last year.
+- Plotted by half-year, publish dates are spread across a decade. Last-edit
+  dates are almost all at the right edge: <mark>six in ten</mark> fall in 2026.
+- ChatGPT cites the most recently edited pages. The two Google surfaces are
+  indistinguishable from each other.
+- The page cited first tends to be fresher than the pages cited after it.
+
+## Takeaways
+
+### ChatGPT cites the freshest pages
+
+- <mark>55%</mark> of ChatGPT's cited articles were edited in the last 90 days,
+  against 39% for both Google surfaces. Median 76 days since edit vs 125.
+  (Declared dates only.)
+- The two Google surfaces are indistinguishable from each other on every
+  freshness measure.
+- All three cite articles of the same age since publish — about 440 days. The
+  difference is entirely in how recently the page was edited. ChatGPT's live
+  search appears to reward the edit; Google's index appears to reward the page.
+
+### The first citation is fresher than the rest
+
+- The page cited in position one had a median edit age of <mark>73 days</mark>;
+  every other position, 121 days.
+- Small sample (37 first positions with a declared date), so treat this as a
+  direction. But it points the same way as the engine result: recency of edit
+  goes with prominence, not just with inclusion.
+
+### SaaS is the freshest
+
+Declared dates only.
+
+| Vertical | Median days since created | Median days since edit |
+|:--|--:|--:|
+| <mark>SaaS</mark> | <mark>497</mark> | <mark>86</mark> |
+| Finance | 255 | 125 |
+| Local services | 324 | 125 |
+| Travel | 517 | 135 |
+| <mark>Shopping</mark> | <mark>484</mark> | <mark>125</mark> |
+
+- SaaS pages are the oldest *and* the most recently edited — pricing pages,
+  comparison pages and integration catalogues are living documents.
+- Shopping is the opposite: two-year-old gift guides and "best of" roundups
+  still being cited, a third of them untouched in over a year.
+- Finance and local services cite younger pages than the rest.
+- Wellness had too few dated citations to report.
+
+### What this changes about the work
+
+- The instinct to publish new pages to get cited is backwards on this data. The
+  page that gets cited has existed long enough to be indexed, linked and
+  trusted — and was edited recently enough to be current.
+- That makes the refresh the unit of work, not the post: revisit the pages that
+  already rank, update the facts, and stamp the date.
+- This is related to a finding from [the answer-quality
+  study](/research/answer-quality-chatgpt-vs-google/): most factual errors in AI
+  answers were staleness, not invention. The engines cite maintained pages
+  because maintained pages are where the current facts are.
+
+## Method
+
+<Callout>
+  <ul>
+    <li>59 prompts across six verticals (SaaS, finance, shopping, travel,
+    local services, wellness), captured 2026-09-11, signed out, on the free public
+    version of each engine. Google pinned to New York; ChatGPT country-level.</li>
+    <li>Every cited URL — 733 distinct pages — was fetched once the same day.
+    Platform pages that never state a date (Google's own Shopping, Maps and
+    search links, YouTube, Reddit, Instagram) are set aside: 198 of them,
+    leaving <b>535 pages</b> to date.</li>
+    <li><b>Declared dates first.</b> What the page says about itself, in trust
+    order: Open Graph <code>article:modified_time</code>, JSON-LD
+    <code>dateModified</code>, <code>og:updated_time</code>, plain
+    <code>&lt;meta&gt;</code>. Same ladder for the publish date. HTTP
+    <code>Last-Modified</code> headers and dates within 24 hours of our fetch
+    are discarded (deploy stamps and templates that print "now").</li>
+    <li><b>Wayback estimates second.</b> Where a page declares nothing, the
+    publish date is its first Wayback Machine capture (an upper bound: the
+    page is at least that old) and the last edit is the midpoint of the
+    window between the last capture whose prose matches today's page and the
+    first that doesn't. Rotating listings (flight routes, directories, deals)
+    are pinned to the run date. Every estimate is flagged and drawn striped in
+    the chart.</li>
+    <li>The headline describes the <b>356 pages</b> with both dates: 215 with
+    both declared, the rest with at least one estimated. Of the remaining 179
+    pages, 61 had only a publish date, 14 only an edit date, 104 neither
+    (never archived, JS-only, PDF, or refused the fetch).</li>
+  </ul>
+</Callout>
+
+## Caveats
+
+- **Two fifths of the headline set is estimated, and the estimates lean in
+  known directions.** 141 of 356 pages carry at least one Wayback-derived date.
+  A first-capture date is an upper bound on creation, so estimated publish
+  bars lean late: the blue bars are, if anything, too far right, and the pages
+  are older than drawn. Last-edit windows have a median width of about four
+  months; the midpoint can miss by two. 27 rotating listings are pinned to the
+  run date and account for part of the tallest orange bar. Drop them and
+  "edited in the last year" moves from 69% to <mark>66%</mark>; the median
+  time since edit from 145 to 172 days. The shape survives.
+- **The declared dates are the pages' own.** We take each page's created and
+  modified markup at its word. A page can overstate freshness (a template that
+  re-stamps on every deploy) or understate it (a real edit with no date
+  change). The 24-hour and header exclusions catch the loudest overstatement;
+  nothing catches the understatement.
+- **A third of citations could not be dated at all.** 198 platform pages never
+  state dates; 104 ordinary pages were never archived, are JS-rendered or PDF,
+  or refused the fetch. The headline describes the pages that could be dated.
+- **One day's snapshot.** 356 dated pages across 59 prompts. Engine and
+  vertical gaps under ~10 points are within noise until they repeat across runs;
+  the headline shape — old page, recent edit — is large enough to trust.
+- **Correlation, not cause.** Engines may cite fresh pages because they prefer
+  freshness, or because the pages worth citing happen to be the ones people
+  maintain. This study can't separate the two.
+- **Signed-out and free tiers only.** Logged-in or paid surfaces may cite
+  differently.
+
+### However, estimates don't seem to change the outcome
+
+- Restrict to the 213 citations whose page declares a usable edit date, with
+  nothing estimated, and the numbers move but the shape doesn't: median age
+  <mark>15 months</mark>, median time since edit <mark>4 months</mark>.
+- Three quarters of those were edited within the year; seven in ten had been
+  edited after they were published; the median gap from publish to last edit
+  is <mark>419 days</mark>.
+- The declared set is fresher than the blended set because publishers who
+  mark up dates are the publishers who go back and edit. The Wayback check on
+  undated pages (see Method) is what pulls "three quarters" down to "seven in ten".
+- The stalest cited article we found was a 2017 travel-blog post never touched
+  since. It is the exception; the middle of the distribution is a maintained page.
+
+## Examples
+
+Three of the 59 prompts, with every page the engine cited, the dates we found and where each updated date came from. Expand one to see the rows.
+
+<details>
+<summary><b>Google AI Mode</b> · finance · “What is the best strategy in managing credit card debt while growing a credit score?”</summary>
+
+| # | Page | Published | Updated | Updated date source |
+|--:|:--|:--|:--|:--|
+| 1 | **experian.com** `/blogs/ask-experian/credit-education/impr…` | 2026-05-08 | 2026-05-08 | declared: Open Graph og:updated_time |
+| 2 | **consumerfinance.gov** `/ask-cfpb/how-do-i-get-and-keep-a-good-cr…` | 2017-07-05 ~ | 2024-12-22 ~ | approx: Wayback bracket midpoint |
+| 3 | **johnsonfinancialgroup.com** `/resources/blogs/your-financial-life/unde…` | 2019-11-13 | 2024-07-10 | declared: JSON-LD dateModified |
+| 4 | **upgrade.com** `/credit-health/insights/better-money-habits` | 2025-10-30 | 2026-08-19 | declared: Open Graph article:modified_time |
+| 5 | **experian.com** `/blogs/ask-experian/what-debt-to-pay-off…` | 2025-01-16 | 2025-01-16 | declared: Open Graph og:updated_time |
+| 6 | **mycreditunion.gov** `/brochure-publications/brochure/money-bas…` | 2025-01-22 | 2025-06-12 | declared: Open Graph og:updated_time |
+| 7 | **experian.com** `/blogs/ask-experian/ways-to-improve-credit` | 2025-11-25 | 2025-11-25 | declared: Open Graph og:updated_time |
+| 8 | **hancockwhitney.com** `/insights/7-steps-improve-credit-score` | 2025-07-16 | 2025-08-25 | declared: JSON-LD dateModified |
+| 9 | **westernsouthern.com** `/personal-finance/manage-credit-card-debt` | 2025-06-04 | 2025-06-04 | declared: JSON-LD dateModified |
+| 10 | **noblebank.com** `/effective-credit-card-management-strategies` | 2024-08-06 | 2024-12-05 ~ | approx: unchanged since first capture |
+| 11 | **schwab.com** `/learn/story/how-to-improve-credit-score` | — | 2026-06-11 | declared: JSON-LD dateModified |
+| 12 | **nerdwallet.com** `/finance/learn/raise-credit-score-fast` | 2019-08-21 | 2026-02-25 | declared in an old capture: JSON-LD dateModified |
+
+</details>
+
+<details>
+<summary><b>ChatGPT</b> · saas · “whats the best hosted vm service for running automated test suites? i need to spin up browsers and run selenium tests without managing the infra myself”</summary>
+
+| # | Page | Published | Updated | Updated date source |
+|--:|:--|:--|:--|:--|
+| 1 | **browserstack.com** `/` | — | 2026-09-06 | declared: Open Graph article:modified_time |
+| 2 | **browserstack.com** `/cloud-selenium-grid` | — | 2025-04-03 | declared: Open Graph article:modified_time |
+| 3 | **saucelabs.com** `/` | 2008-09-24 ~ | 2025-08-22 ~ | approx: Wayback bracket midpoint |
+| 4 | **lambdatest.com** `/` | 2025-01-01 | 2026-05-22 | declared: JSON-LD dateModified |
+| 5 | **testingbot.com** `/` | 2011-12-03 ~ | 2023-10-24 ~ | approx: Wayback bracket midpoint |
+| 6 | **testingbot.com** `/features/automation/selenium` | 2022-01-19 ~ | 2026-07-12 ~ | approx: Wayback bracket midpoint |
+| 7 | **testingbot.com** `/support/web-automate/selenium` | 2025-07-09 ~ | 2026-06-14 ~ | approx: unchanged since first capture |
+| 8 | **github.com** `/features/actions` | 2018-10-16 ~ | — | none |
+| 9 | **circleci.com** `/` | 2026-09-11 | 2025-11-17 ~ | approx: Wayback bracket midpoint |
+| 10 | **aws.amazon.com** `/ec2` | 2008-08-19 ~ | 2026-08-27 | declared in an old capture: Open Graph og:updated_time |
+| 11 | **testgrid.io** `/cloud-selenium-grid` | 2026-04-17 ~ | 2026-04-17 ~ | approx: unchanged since first capture |
+
+</details>
+
+<details>
+<summary><b>Google AI Overview</b> · shopping · “what are the best cameras that are known for their insane detail and quality in images”</summary>
+
+| # | Page | Published | Updated | Updated date source |
+|--:|:--|:--|:--|:--|
+| 1 | **thecotswoldphotographer.com** `/best-cameras-2025-value-performance` | 2025-07-28 | 2026-09-01 | declared: Open Graph og:updated_time |
+| 2 | **dpreview.com** `/reviews/buying-guide-best-high-end-cameras` | 2023-11-13 | 2023-11-15 | declared in an old capture: JSON-LD dateModified |
+| 3 | **digitalcameraworld.com** `/buying-guides/the-10-highest-resolution…` | 2022-09-06 | 2025-10-28 | declared: Open Graph article:modified_time |
+| 4 | **techradar.com** `/cameras/the-best-camera-for-photography` | 2025-11-27 | 2026-08-10 | declared: Open Graph article:modified_time |
+| 5 | **photographylife.com** `/best-mirrorless-camera` | 2018-12-25 | 2026-04-08 | declared: Open Graph article:modified_time |
+| 6 | **digitalcameraworld.com** `/buying-guides/the-best-medium-format-camera` | 2022-11-03 | 2026-04-21 | declared: Open Graph article:modified_time |
+| 7 | **clippingexpertasia.com** `/blog/top-10-highest-resolution-cameras-m…` | 2026-06-13 | 2026-06-13 | declared: Open Graph article:modified_time |
+| 8 | **martinkleinheinz.de** `/en/digital-medium-format-cameras` | 2025-08-02 | 2026-05-25 | declared: JSON-LD dateModified |
+| 9 | **photococamera.com** `/best-medium-format-cameras-2025-professi…` | 2025-10-06 | 2025-10-07 | declared: Open Graph article:modified_time |
+| 10 | **google.com** `/search` | — | — | platform page, no dates |
+| 11 | **google.com** `/search` | — | — | platform page, no dates |
+
+</details>
+
+A `~` marks a Wayback Machine estimate. [Full set of data tracking created and modified date provenance for 767 citation URLs](/research/data-2026-09-11-date-provenance.csv) (CSV, one row per citation, with the provenance note for each date).

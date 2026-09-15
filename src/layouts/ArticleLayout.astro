@@ -8,7 +8,7 @@ import { graph, organization, person, ORGANIZATION_ID, PERSON_ID } from "../lib/
 
 interface Props { entry: Research }
 const { entry } = Astro.props
-const { title, description, publishDate, updatedDate, topics, heroImage, citations, canonicalUrl } = entry.data
+const { title, description, deck, publishDate, updatedDate, topics, heroImage, citations, canonicalUrl } = entry.data
 const url = absolute(entry.id)
 const canonical = canonicalUrl ?? url
 const minutes = readingTime(entry)
@@ -58,7 +58,7 @@ const jsonLd = [
     <header class="article-head">
       <p class="eyebrow"><a href={path()}>← Research</a></p>
       <h1>{title}</h1>
-      <p class="deck">{description}</p>
+      <p class="deck">{deck ?? description}</p>
       <ArticleMeta {publishDate} {updatedDate} readingTime={minutes} {topics} byline />
     </header>
     {heroImage && (

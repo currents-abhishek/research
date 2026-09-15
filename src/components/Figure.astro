@@ -1,5 +1,6 @@
 ---
-// <Figure src="/images/x.svg" alt="..." label="Figure 1" caption="..." />
+// <Figure src="/images/x.svg" alt="..." label="Figure 1" caption="..." wide />
+// `wide` breaks the figure out of the text column to ~80% of the viewport on desktop; unchanged on mobile.
 // `src` is a path under public/ (e.g. "/images/foo.svg"); the base is added here.
 import { path } from "../lib/site"
 interface Props {
@@ -9,11 +10,12 @@ interface Props {
   label?: string
   width?: number
   height?: number
+  wide?: boolean
 }
-const { src, alt, caption, label, width, height } = Astro.props
+const { src, alt, caption, label, width, height, wide = false } = Astro.props
 const href = /^https?:\/\//.test(src) ? src : path(src)
 ---
-<figure class="figure">
+<figure class:list={["figure", { "figure--wide": wide }]}>
   <img src={href} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
   {(label || caption || Astro.slots.has("default")) && (
     <figcaption class="caption">
