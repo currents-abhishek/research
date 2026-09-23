@@ -17,7 +17,7 @@ The first screen is, in order: **h1 → subtext → "what this means for us" →
   - After: Summary → Takeaways → Method → Caveats → Appendix.
   - Why: Method and Caveats are the same genre (how to read the numbers) and belong together. Neither earns a place ahead of the takeaways.
 - **Stat tiles right after the chart, exactly two or three.** The value is one big number; the label is plain words with the hedge in parentheses.
-  - Example: `1.9 yrs` / "typical age of a cited page (half are older)" and `69%` / "were edited in the last 12 months".
+  - Example: `23 mo` / "typical age of a cited page (half are older)" and `69%` / "were edited in the last 12 months".
   - Why: the tiles are the numbers a reader would quote. Give them the number and the exact reading of it, nothing else.
 
 ## Figure caption
